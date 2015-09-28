@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>Voidspace Pythonutils</title>
+<meta name="author" content="Michael Foord" />
+<meta name="date" content="2009/06/09" />
+<link rel="stylesheet" href="stylesheets/voidspace_docutils.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="voidspace-pythonutils">
+<h1 class="title">Voidspace Pythonutils</h1>
+<h2 class="subtitle" id="the-voidspace-pythonutils-package">The Voidspace Pythonutils Package</h2>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Author:</th>
+<td>Michael Foord</td></tr>
+<tr><th class="docinfo-name">Contact:</th>
+<td><a class="first last reference external" href="mailto:fuzzyman&#37;&#52;&#48;voidspace&#46;org&#46;uk">fuzzyman<span>&#64;</span>voidspace<span>&#46;</span>org<span>&#46;</span>uk</a></td></tr>
+<tr><th class="docinfo-name">Version:</th>
+<td>0.4.0</td></tr>
+<tr><th class="docinfo-name">Date:</th>
+<td>2009/06/09</td></tr>
+<tr class="field"><th class="docinfo-name">License:</th><td class="field-body"><a class="reference external" href="BSD-LICENSE.html">BSD License</a> <a class="footnote-reference" href="#id10" id="id1">[1]</a></td>
+</tr>
+<tr class="field"><th class="docinfo-name">Online Version:</th><td class="field-body"><a class="reference external" href="http://www.voidspace.org.uk/python/pythonutils.html">Pythonutils Homepage</a></td>
+</tr>
+<tr class="field"><th class="docinfo-name">Support:</th><td class="field-body"><a class="reference external" href="http://groups.google.com/group/pythonutils/">Mailing List</a></td>
+</tr>
+</tbody>
+</table>
+<div class="contents topic" id="the-pythonutils-modules">
+<p class="topic-title first">The Pythonutils Modules</p>
+<ul class="simple">
+<li><a class="reference internal" href="#introduction" id="id19">Introduction</a></li>
+<li><a class="reference internal" href="#downloading" id="id20">Downloading</a></li>
+<li><a class="reference internal" href="#documentation" id="id21">Documentation</a></li>
+<li><a class="reference internal" href="#importing-from-pythonutils" id="id22">Importing from Pythonutils</a></li>
+<li><a class="reference internal" href="#compatibility" id="id23">Compatibility</a></li>
+<li><a class="reference internal" href="#changelog" id="id24">CHANGELOG</a><ul>
+<li><a class="reference internal" href="#version-0-4-0" id="id25">2009/06/09 - Version 0.4.0</a></li>
+<li><a class="reference internal" href="#version-0-3-0" id="id26">2007/04/22 - Version 0.3.0</a></li>
+<li><a class="reference internal" href="#version-0-2-5" id="id27">2005/12/16 - Version 0.2.5</a></li>
+<li><a class="reference internal" href="#version-0-2-4" id="id28">2005/11/06 - Version 0.2.4</a></li>
+<li><a class="reference internal" href="#version-0-2-3" id="id29">2005/10/17 - Version 0.2.3</a></li>
+<li><a class="reference internal" href="#version-0-2-2" id="id30">2005/09/09 - Version 0.2.2</a></li>
+<li><a class="reference internal" href="#version-0-2-1" id="id31">2005/09/04 - Version 0.2.1</a></li>
+<li><a class="reference internal" href="#version-0-2-0" id="id32">2005/08/31 - Version 0.2.0</a></li>
+<li><a class="reference internal" href="#version-0-1-1" id="id33">2005/06/01 - Version 0.1.1</a></li>
+<li><a class="reference internal" href="#version-0-1-0" id="id34">2005/03/04 - Version 0.1.0</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#license" id="id35">License</a></li>
+<li><a class="reference internal" href="#credits" id="id36">Credits</a></li>
+<li><a class="reference internal" href="#footnotes" id="id37">Footnotes</a></li>
+</ul>
+</div>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">Other than <tt class="docutils literal"><span class="pre">ConfigObj</span></tt> and <tt class="docutils literal"><span class="pre">validate</span></tt> these modules are not under
+active development and are in 'bugfix only' maintenance mode.</p>
+</div>
+<div class="section" id="introduction">
+<h1><a class="toc-backref" href="#id19">Introduction</a></h1>
+<p>The Voidspace Pythonutils package is a simple way of installing the Voidspace
+collection of modules <a class="footnote-reference" href="#id11" id="id2">[2]</a>. These are currently :</p>
+<blockquote>
+<ul class="simple">
+<li><strong>ConfigObj</strong> 4.6.0   - Easy config file reading/writing</li>
+<li><strong>validate</strong>  1.0.0   - Validation and type conversion system</li>
+<li><strong>StandOut</strong>  3.0.0   - Simple logging and output control object</li>
+<li><strong>pathutils</strong> 0.2.6   - For working with paths and files</li>
+<li><strong>cgiutils</strong>  0.3.6   - <acronym title="Common Gateway Interface">CGI</acronym> helpers</li>
+<li><strong>urlpath</strong>   0.1.0   - Functions for handling URLs</li>
+<li><strong>odict</strong>     0.2.2   - Ordered Dictionary Class</li>
+</ul>
+</blockquote>
+<p>Several of the <a class="reference external" href="http://www.voidspace.org.uk/python/index.shtml">Voidspace Projects</a> depend on these modules. They are also
+useful in their own right of course. They are primarily <em>general utility</em>
+modules that simplify common programming tasks in Python.</p>
+<p>All the modules are intended to be compatible with Python 2.2 or more recent.</p>
+<p><a class="reference external" href="configobj.html">ConfigObj</a> is the biggest module in the Voidspace Pythonutils package. It offers
+an extremely simple interface to reading and writing config files, and has a
+vast array of additional features.</p>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">These modules are maintained separately. You can <em>sometimes</em> get more
+recent versions from the <a class="reference external" href="http://www.voidspace.org.uk/python/modules.shtml">Voidspace Modules</a> or <a class="reference external" href="http://www.voidspace.org.uk/python/recipebook.shtml">Recipebook</a> pages.</p>
+</div>
+</div>
+<div class="section" id="downloading">
+<h1><a class="toc-backref" href="#id20">Downloading</a></h1>
+<ul class="simple">
+<li><a class="reference external" href="http://www.voidspace.org.uk/downloads/pythonutils-0.4.0.zip">Source Distribution</a> (307kb) (zipfile with documentation)</li>
+</ul>
+<p>Many of the modules are also available individually from the
+<a class="reference external" href="http://www.voidspace.org.uk/python/modules.shtml">Voidspace Modules</a> page or the <a class="reference external" href="http://www.voidspace.org.uk/python/recipebook.shtml">Voidspace Python Recipebook</a>.</p>
+</div>
+<div class="section" id="documentation">
+<h1><a class="toc-backref" href="#id21">Documentation</a></h1>
+<p>Each module has their own page of documentation. This documentation comes
+bundled in the source package.</p>
+<ul class="simple">
+<li><a class="reference external" href="configobj.html">ConfigObj</a> <a class="footnote-reference" href="#id12" id="id3">[3]</a></li>
+<li><a class="reference external" href="validate.html">validate</a> <a class="footnote-reference" href="#id13" id="id4">[4]</a></li>
+<li><a class="reference external" href="standout.html">StandOut</a> <a class="footnote-reference" href="#id14" id="id5">[5]</a></li>
+<li><a class="reference external" href="pathutils.html">pathutils</a> <a class="footnote-reference" href="#id15" id="id6">[6]</a></li>
+<li><a class="reference external" href="cgiutils.html">cgiutils</a> <a class="footnote-reference" href="#id16" id="id7">[7]</a></li>
+<li><a class="reference external" href="urlpath.html">urlpath</a> <a class="footnote-reference" href="#id17" id="id8">[8]</a></li>
+<li><a class="reference external" href="odict.html">odict</a> <a class="footnote-reference" href="#id18" id="id9">[9]</a></li>
+</ul>
+</div>
+<div class="section" id="importing-from-pythonutils">
+<h1><a class="toc-backref" href="#id22">Importing from Pythonutils</a></h1>
+<dl class="docutils">
+<dt>The pythonutils distributions comes with the 'pythonutils.pth' file. This needs</dt>
+<dd>to be somewhere on <tt class="docutils literal"><span class="pre">sys.path</span></tt>. This <em>ought</em> to happen automatically if you
+use the windows installer or the <tt class="docutils literal"><span class="pre">setup.py</span> <span class="pre">install</span></tt> command.</dd>
+</dl>
+<p>This means that you can use <em>any</em> of the following commands (or similar) to
+import from the Voidspace modules :</p>
+<div class="pysrc"><span class="pykeyword">from</span> <span class="pytext">configobj</span> <span class="pykeyword">import</span> <span class="pytext">ConfigObj</span><br />
+<span class="pykeyword">from</span> <span class="pytext">pythonutils</span><span class="pyoperator">.</span><span class="pytext">configobj</span> <span class="pykeyword">import</span> <span class="pytext">ConfigObj</span><br />
+<span class="pykeyword">from</span> <span class="pytext">pythonutils</span> <span class="pykeyword">import</span> <span class="pytext">ConfigObj</span><br />
+<br />
+<span class="pykeyword">from</span> <span class="pytext">odict</span> <span class="pykeyword">import</span> <span class="pytext">SequenceOrderedDict</span><br />
+<span class="pykeyword">from</span> <span class="pytext">pythonutils</span><span class="pyoperator">.</span><span class="pytext">odict</span> <span class="pykeyword">import</span> <span class="pytext">SequenceOrderedDict</span><br />
+<span class="pykeyword">from</span> <span class="pytext">pythonutils</span> <span class="pykeyword">import</span> <span class="pytext">SequenceOrderedDict</span><span class="pytext"></span></div><p>If any of these commands fail, check that the '.pth' file is in an appropriate
+location. I reccommend using the <tt class="docutils literal"><span class="pre">from</span> <span class="pre">configobj</span> <span class="pre">import</span> <span class="pre">ConfigObj</span></tt> type
+imports, as these work with the individual modules.</p>
+<p>The exception are <em>cgiutils</em> and <em>validate</em>. These aren't imported into the
+pythonutils namespace because they are less commonly used. You can still do
+<tt class="docutils literal"><span class="pre">import</span> <span class="pre">cgiutils</span></tt> and <tt class="docutils literal"><span class="pre">import</span> <span class="pre">pythonutils.cgiutils</span></tt>, but
+<tt class="docutils literal"><span class="pre">from</span> <span class="pre">pythonutils</span> <span class="pre">import</span> <span class="pre">*</span></tt> doesn't import their names.</p>
+<div class="caution">
+<p class="first admonition-title">Caution!</p>
+<p>I've had a report that on <em>some</em> distributions of Python 2.4 the '.pth'
+file is being put in a place where it's not being accessed. When I find a
+solution I'll make a fix and/or let you know.</p>
+<p class="last">You can manually add a <tt class="docutils literal"><span class="pre">pythonutils.pth</span></tt> file in your <tt class="docutils literal"><span class="pre">site-packages</span></tt>
+folder, with a single line pointing to the location of the pythonutils
+directory.</p>
+</div>
+</div>
+<div class="section" id="compatibility">
+<h1><a class="toc-backref" href="#id23">Compatibility</a></h1>
+<p>All the modules in Pythontuils are <em>intended</em> to be compatible with Python 2.2
+and more recent. Some of the modules (configobj and validate for example) have
+been tested extensively for compatibility with Python 2.2 - some of the other
+modules have been tested less rigorously  <img src="/smilies/biggrin.gif" alt="Very Happy" height="15" width="15" /> .</p>
+<p>If you have any problems (or discover any other bugs) then email me (on
+<a class="reference external" href="mailto:fuzzyman&#37;&#52;&#48;voidspace&#46;org&#46;uk">fuzzyman<span>&#64;</span>voidspace<span>&#46;</span>org<span>&#46;</span>uk</a>)and I'll resolve the problems (or fix the bug).</p>
+</div>
+<div class="section" id="changelog">
+<h1><a class="toc-backref" href="#id24">CHANGELOG</a></h1>
+<p>Again, this is a CHANGELOG for the Pythonutils package. Each module will have
+it's own CHANGELOG.</p>
+<div class="section" id="version-0-4-0">
+<h2><a class="toc-backref" href="#id25">2009/06/09 - Version 0.4.0</a></h2>
+<p>Updated the following modules :</p>
+<ul class="simple">
+<li>ConfigObj 4.6.0</li>
+<li>validate 1.0.0</li>
+<li>pathutils 0.2.6</li>
+</ul>
+</div>
+<div class="section" id="version-0-3-0">
+<h2><a class="toc-backref" href="#id26">2007/04/22 - Version 0.3.0</a></h2>
+<p>Removed the listquote module.</p>
+<p>Updated the following modules :</p>
+<ul class="simple">
+<li>ConfigObj 4.4.0</li>
+<li>validate 0.2.3</li>
+<li>StandOut 3.0.0</li>
+<li>odict 0.2.2</li>
+<li>pathutils 0.2.5</li>
+</ul>
+</div>
+<div class="section" id="version-0-2-5">
+<h2><a class="toc-backref" href="#id27">2005/12/16 - Version 0.2.5</a></h2>
+<p>Updated the following modules :</p>
+<ul class="simple">
+<li>ConfigObj 4.1.0</li>
+<li>validate 0.2.1</li>
+<li>odict 0.2.1</li>
+<li>pathutils 0.2.4</li>
+<li>cgiutils 0.3.5</li>
+</ul>
+</div>
+<div class="section" id="version-0-2-4">
+<h2><a class="toc-backref" href="#id28">2005/11/06 - Version 0.2.4</a></h2>
+<p>Corrected MANIFEST path separator to <tt class="docutils literal"><span class="pre">/</span></tt>. This allows distutils commands like
+<tt class="docutils literal"><span class="pre">bdist_rpm</span></tt> to work correctly.</p>
+<p>Updated to ConfigObj 4.0.1 and cgiutils 0.3.4</p>
+</div>
+<div class="section" id="version-0-2-3">
+<h2><a class="toc-backref" href="#id29">2005/10/17 - Version 0.2.3</a></h2>
+<p>Updated to ConfigObj 4.0.0 final</p>
+<p>Updated to cgiutils 0.3.3</p>
+</div>
+<div class="section" id="version-0-2-2">
+<h2><a class="toc-backref" href="#id30">2005/09/09 - Version 0.2.2</a></h2>
+<p>Updated to ConfigObj 4.0.0 beta 5</p>
+<p>This contains bugfixes to ConfigObj.</p>
+<p>Updated to odict 0.1.2 with various improvements and optimisations.</p>
+</div>
+<div class="section" id="version-0-2-1">
+<h2><a class="toc-backref" href="#id31">2005/09/04 - Version 0.2.1</a></h2>
+<p>Updated to ConfigObj 4.0.0 beta 4</p>
+<p>This contains bugfixes to ConfigObj.</p>
+</div>
+<div class="section" id="version-0-2-0">
+<h2><a class="toc-backref" href="#id32">2005/08/31 - Version 0.2.0</a></h2>
+<p>Refactored and redocumented.</p>
+<p><strong>Major</strong> update to ConfigObj and validate.</p>
+<p>Removed caseless, and added odict and urlpath.</p>
+<ul class="simple">
+<li>ConfigObj   4.0.0 beta 3</li>
+<li>listquote   1.4.0</li>
+<li>validate    0.2.0</li>
+<li>StandOut    2.1.0</li>
+<li>pathutils   0.2.1</li>
+<li>cgiutils    0.3.2</li>
+<li>odict       0.1.0</li>
+<li>urlpath     0.1.0</li>
+</ul>
+</div>
+<div class="section" id="version-0-1-1">
+<h2><a class="toc-backref" href="#id33">2005/06/01 - Version 0.1.1</a></h2>
+<p>Updated several of the modules.</p>
+<p>Thanks to <a class="reference external" href="mailto:ppandit&#37;&#52;&#48;yahoo&#46;com">Par Pandit</a>  for bugfix to listquote.py</p>
+<ul class="simple">
+<li>ConfigObj   3.3.1b</li>
+<li>caseless    2.2.0</li>
+<li>listquote   1.3.0</li>
+<li>validate    0.1.6</li>
+<li>StandOut    2.1.0</li>
+<li>pathutils   0.2.0</li>
+<li>cgiutils    0.3.0</li>
+</ul>
+</div>
+<div class="section" id="version-0-1-0">
+<h2><a class="toc-backref" href="#id34">2005/03/04 - Version 0.1.0</a></h2>
+<p>Packaged several of the Voidspace Pythonutils modules together.</p>
+<ul class="simple">
+<li>ConfigObj   3.3.0</li>
+<li>caseless    2.2.0</li>
+<li>listquote   1.2.0</li>
+<li>validate    0.1.6</li>
+<li>StandOut    2.1.0</li>
+<li>pathutils   0.1.0</li>
+<li>cgiutils    0.1.0</li>
+</ul>
+</div>
+</div>
+<div class="section" id="license">
+<h1><a class="toc-backref" href="#id35">License</a></h1>
+<p>These files are licensed under the BSD license. This is a very unrestrictive
+license - but it comes with the usual disclaimer. This is free software - test
+it, break it, just don't blame me if it eats your data ! (If it does though,
+let me know, and I'll fix that it so it doesn't happen to anyone else
+ <img src="/smilies/smile.gif" alt="Smile" height="15" width="15" /> </p>
+<pre class="literal-block">
+Copyright (c) 2004-2005, Michael Foord
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+
+    * Redistributions in binary form must reproduce the above
+      copyright notice, this list of conditions and the following
+      disclaimer in the documentation and/or other materials provided
+      with the distribution.
+
+    * Neither the name of Michael Foord nor the name of Voidspace
+      may be used to endorse or promote products derived from this
+      software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+&quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+</pre>
+<p>You should also be able to find a copy of this license at : <a class="reference external" href="BSD-LICENSE.html">BSD License</a></p>
+</div>
+<div class="section" id="credits">
+<h1><a class="toc-backref" href="#id36">Credits</a></h1>
+<p>Note that the individual modules may be the work of more than one author. See
+the indiviudal documentation pages for details of contributors.</p>
+<p>Particular thanks goes to <a class="reference external" href="mailto:nico&#37;&#52;&#48;teknico&#46;net">Nicola Larosa</a> for his help with ConfigObj and
+setting up the <a class="reference external" href="http://www.voidspace.org.uk">Voidspace</a> server.</p>
+<p>Contributions, suggestions, and bugfixes are welcome. Also welcomed are
+<a class="reference external" href="http://www.voidspace.org.uk/sponsorship.shtml">donations</a> to help cover the hosting and delivery costs of pythonutils.</p>
+</div>
+<div class="section" id="footnotes">
+<h1><a class="toc-backref" href="#id37">Footnotes</a></h1>
+<table class="docutils footnote" frame="void" id="id10" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Online at <a class="reference external" href="http://www.voidspace.org.uk/python/license.shtml">http://www.voidspace.org.uk/python/license.shtml</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id11" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>Well, the common ones anyway. You will see more modules at <a class="reference external" href="http://www.voidspace.org.uk/python/modules.shtml">Voidspace Modules</a> that aren't included.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id12" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[3]</a></td><td>Online at <a class="reference external" href="http://www.voidspace.org.uk/python/configobj.html">http://www.voidspace.org.uk/python/configobj.html</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id13" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[4]</a></td><td>Online at <a class="reference external" href="http://www.voidspace.org.uk/python/validate.html">http://www.voidspace.org.uk/python/validate.html</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id14" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id5">[5]</a></td><td>Online at <a class="reference external" href="http://www.voidspace.org.uk/python/standout.html">http://www.voidspace.org.uk/python/standout.html</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id15" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id6">[6]</a></td><td>Online at <a class="reference external" href="http://www.voidspace.org.uk/python/pathutils.html">http://www.voidspace.org.uk/python/pathutils.html</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id16" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id7">[7]</a></td><td>Online at <a class="reference external" href="http://www.voidspace.org.uk/python/cgiutils.html">http://www.voidspace.org.uk/python/cgiutils.html</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id17" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id8">[8]</a></td><td>Online at <a class="reference external" href="http://www.voidspace.org.uk/python/urlpath.html">http://www.voidspace.org.uk/python/urlpath.html</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id18" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id9">[9]</a></td><td>Online at <a class="reference external" href="http://www.voidspace.org.uk/python/odict.html">http://www.voidspace.org.uk/python/odict.html</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<a class="reference external" href="pythonutils.txt">View document source</a>.
+Generated on: 2009-06-09 20:26 UTC.
+Generated by <a class="reference external" href="http://docutils.sourceforge.net/">Docutils</a> from <a class="reference external" href="http://docutils.sourceforge.net/rst.html">reStructuredText</a> source.
+
+</div>
+</body>
+</html>

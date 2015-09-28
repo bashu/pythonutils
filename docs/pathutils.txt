@@ -1,0 +1,592 @@
+==============================
+ Working With Files and Paths
+==============================
+----------------------
+ The pathutils Module
+----------------------
+
+:Author: Michael Foord
+:Contact: fuzzyman@voidspace.org.uk
+:Version: 0.2.6
+:Date: 2007/11/08
+:License: `BSD License`_ [#]_
+:Online Version: `pathutils online`_
+:Support: `Mailing List`_
+
+.. _Mailing List: http://groups.google.com/group/pythonutils/
+.. _`pathutils online`: http://www.voidspace.org.uk/python/pathutils.html
+.. _BSD License: BSD-LICENSE.txt
+
+.. contents:: Paths and Files
+
+.. note::
+
+    This module is not under active development and is in 'bugfix only'
+    maintenance mode.
+
+Introduction
+============
+
+This module contains convenience functions for working with files and paths.
+
+This module is a part of the pythonutils_ [#]_ package. Many of the modules in 
+this package can be seen at the `Voidspace Modules Page`_ or the 
+`Voidspace Python Recipebook`_.
+
+.. _pythonutils: pythonutils.html
+.. _Voidspace Modules Page: http://www.voidspace.org.uk/python/modules.shtml
+.. _Voidspace Python Recipebook: http://www.voidspace.org.uk/python/recipebook.shtml
+
+
+Downloading
+-----------
+
+As well as being included in the pythonutils_ package, you can download **pathutils**
+directly from :
+
+* `pathutils.py (19k) <http://www.voidspace.org.uk/downloads/pathutils.py>`_
+
+
+Reading and Writing Files
+=========================
+
+This set of functions provide simple one-liners for common operation.
+
+readlines
+---------
+
+::
+
+    readlines(filename)
+
+
+Passed a filename, it reads it, and returns a list of lines. (Read in text mode)
+
+writelines
+----------
+
+::
+
+    writelines(filename, infile, newline=False)
+
+Given a filename and a list of lines it writes the file. (In text mode)
+
+If ``newline`` is ``True`` (default is ``False``) it adds a newline to each line.
+
+
+readbinary
+----------
+
+::
+
+    readbinary(filename)
+
+Given a filename, read a file in binary mode. It returns a single string.
+
+
+writebinary
+-----------
+
+::
+
+    writebinary(filename, infile)
+
+Given a filename and a string, write the file in binary mode. 
+
+
+readfile
+--------
+
+::
+
+    readfile(filename)
+
+Given a filename, read a file in text mode. It returns a single string.
+
+
+writefile
+---------
+
+::
+
+    writebinary(filename, infile)
+
+Given a filename and a string, write the file in text mode. 
+
+
+File Paths
+==========
+
+A few functions useful when working with file paths.  
+
+
+tslash
+------
+
+::
+
+    tslash(apath):
+
+Add a trailing slash (``/``) to a path if it lacks one.
+
+It doesn't use ``os.sep`` because you end up in trouble on windoze, when you
+want separators for URLs.
+
+
+relpath
+-------
+
+::
+
+    relpath(origin, dest)
+
+
+Return the relative path between origin and dest.
+
+If it's not possible return dest.
+
+
+If they are identical return ``os.curdir``
+
+Adapted from `path.py`_ by Jason Orendorff.
+
+
+.. _path.py: http://www.jorendorff.com/articles/python/path/
+
+
+splitall
+--------
+
+::
+
+    splitall(loc)
+
+Return a list of the path components in loc. (Used by relpath_).
+
+The first item in the list will be  either ``os.curdir``, ``os.pardir``, empty,
+or the root directory of loc (for example, ``/`` or ``C:\``).
+
+The other items in the list will be strings.
+    
+Adapted from ``path.py`` by Jason Orendorff.
+
+
+Walking Directory Trees
+=======================
+
+A few generators to assist walking directory trees. All Python 2.2 compatible (pre ``os.walk``).
+
+
+walkfiles
+---------
+
+::
+
+    walkfiles(thisdir)
+
+
+walkfiles(D) -> iterator over files in D, recursively. Yields full file paths.
+
+Adapted from path.py by Jason Orendorff.
+
+
+walkdirs
+--------
+
+::
+
+    walkdirs(thisdir)
+
+Walk through all the subdirectories in a tree. Recursively yields directory
+names (full paths).
+
+
+walkemptydirs
+-------------
+
+::
+
+    walkemptydirs(thisdir)
+
+Recursively yield names of *empty* directories.
+
+These are the only paths omitted when using ``walkfiles``.
+
+
+File Locking
+============
+
+Simple cross platform file locking is a common task, it is not as easy as it
+should be.
+
+One useful module is `XFile <http://www.deimerich.com/>`_, which is a cross 
+platform file locking module. *Under the hood* it uses `fcntl <http://docs.python.org/lib/module-fcntl.html>`_ 
+(for Unix like platforms) or the `win32 <http://sourceforge.net/projects/pywin32>`_ {acro;API;Application Programmers Interface} 
+to do the locking.
+
+Unfortunately, you can't gain an exclusive lock for a read only access.
+
+The following approach (as originally implemented by Guido van Rossum) 
+provides a lock creating a directory with the same name (plus a trailing 
+underscore), as the file. This is simple and cross platform, with some 
+limitations :
+
+* Unusual process termination could result in the directory
+  being left.
+* The process acquiring the lock must have permission to create a
+  directory in the same location as the file.
+* It only locks the file against other processes that attempt to
+  acquire a lock using ``LockFile`` or ``Lock``.
+
+LockError
+---------
+
+The generic error for locking - it is a subclass of ``IOError``.
+
+
+Lock
+----
+
+A simple file lock, compatible with windows and Unixes.
+
+You create a lock by calling : ::
+
+    lock = Lock(filename, timeout=5, step=0.1)
+
+Create a ``Lock`` object on file ``filename``
+
+``timeout`` is the time in seconds to wait before timing out, when
+attempting to acquire the lock.
+
+``step`` is the number of seconds to wait in between each attempt to
+acquire the lock.
+
+.. note::
+
+    If you don't like the way ``Lock`` creates a directory by adding a ``_`` to the filename, then you can subclass and override the ``_mungedname`` method.
+
+A ``Lock`` object has the following methods.
+
+
+lock
+~~~~
+
+::
+
+    lock(force=True)
+
+Lock the file for access by creating a directory of the same name (plus
+a trailing underscore).
+
+The file is only locked if you use this class to acquire the lock
+before accessing.
+
+If ``force`` is ``True`` (the default), then on timeout we forcibly
+acquire the lock.
+
+If ``force`` is ``False``, then on timeout a ``LockError`` is raised.
+
+
+unlock
+~~~~~~
+
+::
+
+    unlock(ignore=True)
+
+Release the lock.
+
+If ``ignore`` is ``True`` and removing the lock directory fails, then
+the error is surpressed. (This may happen if the lock was acquired
+via a timeout.)
+
+``unlock`` is called automatically when the Lock object is deleted.
+
+
+LockFile
+--------
+
+A file like object with an exclusive lock, whilst it is open.
+
+The lock is provided by the ``Lock`` class, which creates a directory
+with the same name as the file (plus a trailing underscore), to indicate
+that the file is locked.
+
+You create a new LockFile by calling : ::
+
+    lockedfile = LockFile(filename, mode='r', bufsize=-1, timeout=5, step=0.1,
+        force=True)
+
+This creates a file like object that is locked (using the ``Lock`` class)
+until it is closed.
+
+The file is only locked against another process that attempts to
+acquire a lock using ``Lock`` (or ``LockFile``).
+
+The lock is released automatically when the file is closed.
+
+The filename, mode and bufsize arguments have the same meaning as for
+the built in function ``open``.
+
+The timeout and step arguments have the same meaning as for a ``Lock``
+object.
+
+The force argument has the same meaning as for the ``Lock.lock`` method.
+
+A ``LockFile`` object has all the normal ``file`` methods and attributes.
+
+
+Usage Examples
+--------------
+
+Here are examples of using ``Lock`` and ``LockFile``.
+
+Where you just want exclusive access to a file, for a single read or write
+operation, ``LockFile`` is the class to use.
+
+.. raw:: html
+
+    {+coloring}
+    
+    # force=False means an error is raised if
+    # we fail to acquire the lock
+    lockedfile = LockFile(filename, 'w', force=False)
+    lockedfile.write(the_file)
+    
+    # close releases the lock
+    lockedfile.close()
+    
+    {-coloring}
+
+If you want to read a file, then amend it, ``Lock`` is the class to use.
+
+.. raw:: html
+
+    {+coloring}
+    
+    lock = Lock(filename)
+    lock.lock(force=False)
+    handle = open(filename)
+    data = handle.read()
+    handle.close()
+    
+    # we've read in the file
+    # now we do something to it
+    data = data.replace(something, something_else)
+    
+    # now we write out the new data
+    handle = open(filename, 'w')
+    handle.write(data)
+    handle.close()
+    
+    # finally, release the lock
+    lock.unlock()
+    
+    {-coloring}
+
+
+py2exe Support
+==============
+
+A common thing for a program to need to know, is what directory is the main
+script in. This is where you may store your support files for the program.
+
+A normal Python script can usually access this information through ``__file__``
+or ``sys.argv[0]``. These approaches can break if your program is frozen with
+`py2exe <http://www.py2exe.org>`_ or other tools.
+
+These functions provide a portable way of determining which directory your
+program is in.
+
+get_main_dir
+------------
+
+::
+
+    get_main_dir()
+
+Return the script directory - whether we're frozen or not.
+
+main_is_frozen
+--------------
+
+::
+
+    main_is_frozen()
+
+Return ``True`` if we're running from a frozen program.
+
+
+Other Functions
+===============
+
+formatbytes
+-----------
+
+::
+
+    formatbytes(size, configdict=None, **configs)
+
+Given a file size as an integer, return a nicely formatted string that
+represents the size. Has various options to control it's output.
+
+You can pass in a dictionary of arguments or keyword arguments. Keyword
+arguments override the dictionary and there are sensible defaults for options
+you don't set.
+
+Options and defaults are as follows :
+
+* ``forcekb = False`` -         If set this forces the output to be in terms
+  of kilobytes and bytes only.
+
+* ``largestonly = True`` -    If set, instead of outputting 
+  ``1 Mbytes, 307 Kbytes, 478 bytes`` it outputs using only the largest 
+  denominator - e.g. ``1.3 Mbytes`` or ``17.2 Kbytes``
+
+* ``kiloname = 'Kbytes'`` -    The string to use for kilobytes
+
+* ``meganame = 'Mbytes'`` - The string to use for Megabytes
+
+* ``bytename = 'bytes'`` -     The string to use for bytes
+
+* ``nospace = True`` -        If set it outputs ``1Mbytes, 307Kbytes``, 
+  notice there is no space.
+
+Example outputs : ::
+
+    19Mbytes, 75Kbytes, 255bytes
+    2Kbytes, 0bytes
+    23.8Mbytes
+
+.. note::
+
+    It currently uses the plural form even for singular.
+
+
+fullcopy
+--------
+
+::
+
+    fullcopy(src, dst)
+
+Copy file from src to dst.
+
+If the dst directory doesn't exist, we will attempt to create it using makedirs.
+
+
+import_path
+-----------
+
+::
+
+    import_path(fullpath, strict=True)
+
+Import a file from the full path. Allows you to import from anywhere,
+something ``__import__`` does not do.
+
+If strict is ``True`` (the default), raise an ``ImportError`` if the module
+is found in the "wrong" directory.
+
+Taken from firedrop2_ by `Hans Nowak`_
+
+.. _firedrop2: http://www.voidspace.org.uk/python/firedrop2/
+.. _Hans Nowak: http://zephyrfalcon.org
+
+
+onerror
+-------
+
+::
+
+    onerror(func, path, exc_info)
+
+Error handler for ``shutil.rmtree``.
+
+If the error is due to an access error (read only file), it attempts to add 
+write permission and then retries.
+
+If the error is for another reason it re-raises the error.
+
+Usage : ``shutil.rmtree(path, onerror=onerror)``
+
+
+CHANGELOG
+=========
+
+2008/01/12
+----------
+
+Bugfix in ``Lock.lock``, thanks to Thomas Viner (and others) who reported it.
+
+
+2007/11/08     Version 0.2.6
+----------------------------
+
+Bug fix in ``Lock`` corrected misspelling of ``os.path`` (thanks to Thomas Viner).
+
+Added a workaround in ``Lock`` for operating systems that don't raise
+``os.error`` when attempting to create a directory that already exists.
+
+
+2006/07/22      Version 0.2.5
+-----------------------------
+
+Bugfix for Python 2.5 compatibility.
+
+
+2005/12/06      Version 0.2.4
+-----------------------------
+
+Fixed bug in ``onerror`` - missing import, *oops*.
+
+
+2005/11/26      Version 0.2.3
+-----------------------------
+
+Added ``Lock``, ``LockError``, and ``LockFile``
+
+Added ``__version__``
+
+
+2005/11/13      Version 0.2.2
+-----------------------------
+
+Added the py2exe support functions.
+
+Added ``onerror``.
+
+
+2005/08/28      Version 0.2.1
+-----------------------------
+
+* Added ``import_path``
+* Added ``__all__``
+* Code cleanup
+
+
+2005/06/01      Version 0.2.0
+-----------------------------
+
+Added ``walkdirs`` generator.
+
+
+2005/03/11      Version 0.1.1
+-----------------------------
+
+Added rounding to ``formatbytes`` and improved ``bytedivider`` with ``divmod``.
+
+Now explicit keyword parameters override the ``configdict`` in ``formatbytes``.
+
+
+2005/02/18      Version 0.1.0
+-----------------------------
+
+The first numbered version.
+
+
+Footnotes
+=========
+
+.. [#] Online at http://www.voidspace.org.uk/python/license.shtml
+.. [#] Online at http://www.voidspace.org.uk/python/pythonutils.html

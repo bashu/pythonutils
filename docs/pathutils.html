@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>Working With Files and Paths</title>
+<meta name="author" content="Michael Foord" />
+<meta name="date" content="2007/11/08" />
+<link rel="stylesheet" href="stylesheets/voidspace_docutils.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="working-with-files-and-paths">
+<h1 class="title">Working With Files and Paths</h1>
+<h2 class="subtitle" id="the-pathutils-module">The pathutils Module</h2>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Author:</th>
+<td>Michael Foord</td></tr>
+<tr><th class="docinfo-name">Contact:</th>
+<td><a class="first last reference external" href="mailto:fuzzyman&#37;&#52;&#48;voidspace&#46;org&#46;uk">fuzzyman<span>&#64;</span>voidspace<span>&#46;</span>org<span>&#46;</span>uk</a></td></tr>
+<tr><th class="docinfo-name">Version:</th>
+<td>0.2.6</td></tr>
+<tr><th class="docinfo-name">Date:</th>
+<td>2007/11/08</td></tr>
+<tr class="field"><th class="docinfo-name">License:</th><td class="field-body"><a class="reference external" href="BSD-LICENSE.txt">BSD License</a> <a class="footnote-reference" href="#id5" id="id1">[1]</a></td>
+</tr>
+<tr class="field"><th class="docinfo-name">Online Version:</th><td class="field-body"><a class="reference external" href="http://www.voidspace.org.uk/python/pathutils.html">pathutils online</a></td>
+</tr>
+<tr class="field"><th class="docinfo-name">Support:</th><td class="field-body"><a class="reference external" href="http://groups.google.com/group/pythonutils/">Mailing List</a></td>
+</tr>
+</tbody>
+</table>
+<div class="contents topic" id="paths-and-files">
+<p class="topic-title first">Paths and Files</p>
+<ul class="simple">
+<li><a class="reference internal" href="#introduction" id="id7">Introduction</a><ul>
+<li><a class="reference internal" href="#downloading" id="id8">Downloading</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#reading-and-writing-files" id="id9">Reading and Writing Files</a><ul>
+<li><a class="reference internal" href="#readlines" id="id10">readlines</a></li>
+<li><a class="reference internal" href="#writelines" id="id11">writelines</a></li>
+<li><a class="reference internal" href="#readbinary" id="id12">readbinary</a></li>
+<li><a class="reference internal" href="#writebinary" id="id13">writebinary</a></li>
+<li><a class="reference internal" href="#readfile" id="id14">readfile</a></li>
+<li><a class="reference internal" href="#writefile" id="id15">writefile</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#file-paths" id="id16">File Paths</a><ul>
+<li><a class="reference internal" href="#tslash" id="id17">tslash</a></li>
+<li><a class="reference internal" href="#relpath" id="id18">relpath</a></li>
+<li><a class="reference internal" href="#splitall" id="id19">splitall</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#walking-directory-trees" id="id20">Walking Directory Trees</a><ul>
+<li><a class="reference internal" href="#walkfiles" id="id21">walkfiles</a></li>
+<li><a class="reference internal" href="#walkdirs" id="id22">walkdirs</a></li>
+<li><a class="reference internal" href="#walkemptydirs" id="id23">walkemptydirs</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#file-locking" id="id24">File Locking</a><ul>
+<li><a class="reference internal" href="#lockerror" id="id25">LockError</a></li>
+<li><a class="reference internal" href="#lock" id="id26">Lock</a><ul>
+<li><a class="reference internal" href="#id3" id="id27">lock</a></li>
+<li><a class="reference internal" href="#unlock" id="id28">unlock</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#lockfile" id="id29">LockFile</a></li>
+<li><a class="reference internal" href="#usage-examples" id="id30">Usage Examples</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#py2exe-support" id="id31">py2exe Support</a><ul>
+<li><a class="reference internal" href="#get-main-dir" id="id32">get_main_dir</a></li>
+<li><a class="reference internal" href="#main-is-frozen" id="id33">main_is_frozen</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#other-functions" id="id34">Other Functions</a><ul>
+<li><a class="reference internal" href="#formatbytes" id="id35">formatbytes</a></li>
+<li><a class="reference internal" href="#fullcopy" id="id36">fullcopy</a></li>
+<li><a class="reference internal" href="#import-path" id="id37">import_path</a></li>
+<li><a class="reference internal" href="#onerror" id="id38">onerror</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#changelog" id="id39">CHANGELOG</a><ul>
+<li><a class="reference internal" href="#id4" id="id40">2008/01/12</a></li>
+<li><a class="reference internal" href="#version-0-2-6" id="id41">2007/11/08     Version 0.2.6</a></li>
+<li><a class="reference internal" href="#version-0-2-5" id="id42">2006/07/22      Version 0.2.5</a></li>
+<li><a class="reference internal" href="#version-0-2-4" id="id43">2005/12/06      Version 0.2.4</a></li>
+<li><a class="reference internal" href="#version-0-2-3" id="id44">2005/11/26      Version 0.2.3</a></li>
+<li><a class="reference internal" href="#version-0-2-2" id="id45">2005/11/13      Version 0.2.2</a></li>
+<li><a class="reference internal" href="#version-0-2-1" id="id46">2005/08/28      Version 0.2.1</a></li>
+<li><a class="reference internal" href="#version-0-2-0" id="id47">2005/06/01      Version 0.2.0</a></li>
+<li><a class="reference internal" href="#version-0-1-1" id="id48">2005/03/11      Version 0.1.1</a></li>
+<li><a class="reference internal" href="#version-0-1-0" id="id49">2005/02/18      Version 0.1.0</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#footnotes" id="id50">Footnotes</a></li>
+</ul>
+</div>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">This module is not under active development and is in 'bugfix only'
+maintenance mode.</p>
+</div>
+<div class="section" id="introduction">
+<h1><a class="toc-backref" href="#id7">Introduction</a></h1>
+<p>This module contains convenience functions for working with files and paths.</p>
+<p>This module is a part of the <a class="reference external" href="pythonutils.html">pythonutils</a> <a class="footnote-reference" href="#id6" id="id2">[2]</a> package. Many of the modules in
+this package can be seen at the <a class="reference external" href="http://www.voidspace.org.uk/python/modules.shtml">Voidspace Modules Page</a> or the
+<a class="reference external" href="http://www.voidspace.org.uk/python/recipebook.shtml">Voidspace Python Recipebook</a>.</p>
+<div class="section" id="downloading">
+<h2><a class="toc-backref" href="#id8">Downloading</a></h2>
+<p>As well as being included in the <a class="reference external" href="pythonutils.html">pythonutils</a> package, you can download <strong>pathutils</strong>
+directly from :</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.voidspace.org.uk/downloads/pathutils.py">pathutils.py (19k)</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="reading-and-writing-files">
+<h1><a class="toc-backref" href="#id9">Reading and Writing Files</a></h1>
+<p>This set of functions provide simple one-liners for common operation.</p>
+<div class="section" id="readlines">
+<h2><a class="toc-backref" href="#id10">readlines</a></h2>
+<pre class="literal-block">
+readlines(filename)
+</pre>
+<p>Passed a filename, it reads it, and returns a list of lines. (Read in text mode)</p>
+</div>
+<div class="section" id="writelines">
+<h2><a class="toc-backref" href="#id11">writelines</a></h2>
+<pre class="literal-block">
+writelines(filename, infile, newline=False)
+</pre>
+<p>Given a filename and a list of lines it writes the file. (In text mode)</p>
+<p>If <tt class="docutils literal"><span class="pre">newline</span></tt> is <tt class="docutils literal"><span class="pre">True</span></tt> (default is <tt class="docutils literal"><span class="pre">False</span></tt>) it adds a newline to each line.</p>
+</div>
+<div class="section" id="readbinary">
+<h2><a class="toc-backref" href="#id12">readbinary</a></h2>
+<pre class="literal-block">
+readbinary(filename)
+</pre>
+<p>Given a filename, read a file in binary mode. It returns a single string.</p>
+</div>
+<div class="section" id="writebinary">
+<h2><a class="toc-backref" href="#id13">writebinary</a></h2>
+<pre class="literal-block">
+writebinary(filename, infile)
+</pre>
+<p>Given a filename and a string, write the file in binary mode.</p>
+</div>
+<div class="section" id="readfile">
+<h2><a class="toc-backref" href="#id14">readfile</a></h2>
+<pre class="literal-block">
+readfile(filename)
+</pre>
+<p>Given a filename, read a file in text mode. It returns a single string.</p>
+</div>
+<div class="section" id="writefile">
+<h2><a class="toc-backref" href="#id15">writefile</a></h2>
+<pre class="literal-block">
+writebinary(filename, infile)
+</pre>
+<p>Given a filename and a string, write the file in text mode.</p>
+</div>
+</div>
+<div class="section" id="file-paths">
+<h1><a class="toc-backref" href="#id16">File Paths</a></h1>
+<p>A few functions useful when working with file paths.</p>
+<div class="section" id="tslash">
+<h2><a class="toc-backref" href="#id17">tslash</a></h2>
+<pre class="literal-block">
+tslash(apath):
+</pre>
+<p>Add a trailing slash (<tt class="docutils literal"><span class="pre">/</span></tt>) to a path if it lacks one.</p>
+<p>It doesn't use <tt class="docutils literal"><span class="pre">os.sep</span></tt> because you end up in trouble on windoze, when you
+want separators for URLs.</p>
+</div>
+<div class="section" id="relpath">
+<h2><a class="toc-backref" href="#id18">relpath</a></h2>
+<pre class="literal-block">
+relpath(origin, dest)
+</pre>
+<p>Return the relative path between origin and dest.</p>
+<p>If it's not possible return dest.</p>
+<p>If they are identical return <tt class="docutils literal"><span class="pre">os.curdir</span></tt></p>
+<p>Adapted from <a class="reference external" href="http://www.jorendorff.com/articles/python/path/">path.py</a> by Jason Orendorff.</p>
+</div>
+<div class="section" id="splitall">
+<h2><a class="toc-backref" href="#id19">splitall</a></h2>
+<pre class="literal-block">
+splitall(loc)
+</pre>
+<p>Return a list of the path components in loc. (Used by <a class="reference internal" href="#relpath">relpath</a>).</p>
+<p>The first item in the list will be  either <tt class="docutils literal"><span class="pre">os.curdir</span></tt>, <tt class="docutils literal"><span class="pre">os.pardir</span></tt>, empty,
+or the root directory of loc (for example, <tt class="docutils literal"><span class="pre">/</span></tt> or <tt class="docutils literal"><span class="pre">C:\</span></tt>).</p>
+<p>The other items in the list will be strings.</p>
+<p>Adapted from <tt class="docutils literal"><span class="pre">path.py</span></tt> by Jason Orendorff.</p>
+</div>
+</div>
+<div class="section" id="walking-directory-trees">
+<h1><a class="toc-backref" href="#id20">Walking Directory Trees</a></h1>
+<p>A few generators to assist walking directory trees. All Python 2.2 compatible (pre <tt class="docutils literal"><span class="pre">os.walk</span></tt>).</p>
+<div class="section" id="walkfiles">
+<h2><a class="toc-backref" href="#id21">walkfiles</a></h2>
+<pre class="literal-block">
+walkfiles(thisdir)
+</pre>
+<p>walkfiles(D) -&gt; iterator over files in D, recursively. Yields full file paths.</p>
+<p>Adapted from path.py by Jason Orendorff.</p>
+</div>
+<div class="section" id="walkdirs">
+<h2><a class="toc-backref" href="#id22">walkdirs</a></h2>
+<pre class="literal-block">
+walkdirs(thisdir)
+</pre>
+<p>Walk through all the subdirectories in a tree. Recursively yields directory
+names (full paths).</p>
+</div>
+<div class="section" id="walkemptydirs">
+<h2><a class="toc-backref" href="#id23">walkemptydirs</a></h2>
+<pre class="literal-block">
+walkemptydirs(thisdir)
+</pre>
+<p>Recursively yield names of <em>empty</em> directories.</p>
+<p>These are the only paths omitted when using <tt class="docutils literal"><span class="pre">walkfiles</span></tt>.</p>
+</div>
+</div>
+<div class="section" id="file-locking">
+<h1><a class="toc-backref" href="#id24">File Locking</a></h1>
+<p>Simple cross platform file locking is a common task, it is not as easy as it
+should be.</p>
+<p>One useful module is <a class="reference external" href="http://www.deimerich.com/">XFile</a>, which is a cross
+platform file locking module. <em>Under the hood</em> it uses <a class="reference external" href="http://docs.python.org/lib/module-fcntl.html">fcntl</a>
+(for Unix like platforms) or the <a class="reference external" href="http://sourceforge.net/projects/pywin32">win32</a> <acronym title="Application Programmers Interface">API</acronym>
+to do the locking.</p>
+<p>Unfortunately, you can't gain an exclusive lock for a read only access.</p>
+<p>The following approach (as originally implemented by Guido van Rossum)
+provides a lock creating a directory with the same name (plus a trailing
+underscore), as the file. This is simple and cross platform, with some
+limitations :</p>
+<ul class="simple">
+<li>Unusual process termination could result in the directory
+being left.</li>
+<li>The process acquiring the lock must have permission to create a
+directory in the same location as the file.</li>
+<li>It only locks the file against other processes that attempt to
+acquire a lock using <tt class="docutils literal"><span class="pre">LockFile</span></tt> or <tt class="docutils literal"><span class="pre">Lock</span></tt>.</li>
+</ul>
+<div class="section" id="lockerror">
+<h2><a class="toc-backref" href="#id25">LockError</a></h2>
+<p>The generic error for locking - it is a subclass of <tt class="docutils literal"><span class="pre">IOError</span></tt>.</p>
+</div>
+<div class="section" id="lock">
+<h2><a class="toc-backref" href="#id26">Lock</a></h2>
+<p>A simple file lock, compatible with windows and Unixes.</p>
+<p>You create a lock by calling :</p>
+<pre class="literal-block">
+lock = Lock(filename, timeout=5, step=0.1)
+</pre>
+<p>Create a <tt class="docutils literal"><span class="pre">Lock</span></tt> object on file <tt class="docutils literal"><span class="pre">filename</span></tt></p>
+<p><tt class="docutils literal"><span class="pre">timeout</span></tt> is the time in seconds to wait before timing out, when
+attempting to acquire the lock.</p>
+<p><tt class="docutils literal"><span class="pre">step</span></tt> is the number of seconds to wait in between each attempt to
+acquire the lock.</p>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you don't like the way <tt class="docutils literal"><span class="pre">Lock</span></tt> creates a directory by adding a <tt class="docutils literal"><span class="pre">_</span></tt> to the filename, then you can subclass and override the <tt class="docutils literal"><span class="pre">_mungedname</span></tt> method.</p>
+</div>
+<p>A <tt class="docutils literal"><span class="pre">Lock</span></tt> object has the following methods.</p>
+<div class="section" id="id3">
+<h3><a class="toc-backref" href="#id27">lock</a></h3>
+<pre class="literal-block">
+lock(force=True)
+</pre>
+<p>Lock the file for access by creating a directory of the same name (plus
+a trailing underscore).</p>
+<p>The file is only locked if you use this class to acquire the lock
+before accessing.</p>
+<p>If <tt class="docutils literal"><span class="pre">force</span></tt> is <tt class="docutils literal"><span class="pre">True</span></tt> (the default), then on timeout we forcibly
+acquire the lock.</p>
+<p>If <tt class="docutils literal"><span class="pre">force</span></tt> is <tt class="docutils literal"><span class="pre">False</span></tt>, then on timeout a <tt class="docutils literal"><span class="pre">LockError</span></tt> is raised.</p>
+</div>
+<div class="section" id="unlock">
+<h3><a class="toc-backref" href="#id28">unlock</a></h3>
+<pre class="literal-block">
+unlock(ignore=True)
+</pre>
+<p>Release the lock.</p>
+<p>If <tt class="docutils literal"><span class="pre">ignore</span></tt> is <tt class="docutils literal"><span class="pre">True</span></tt> and removing the lock directory fails, then
+the error is surpressed. (This may happen if the lock was acquired
+via a timeout.)</p>
+<p><tt class="docutils literal"><span class="pre">unlock</span></tt> is called automatically when the Lock object is deleted.</p>
+</div>
+</div>
+<div class="section" id="lockfile">
+<h2><a class="toc-backref" href="#id29">LockFile</a></h2>
+<p>A file like object with an exclusive lock, whilst it is open.</p>
+<p>The lock is provided by the <tt class="docutils literal"><span class="pre">Lock</span></tt> class, which creates a directory
+with the same name as the file (plus a trailing underscore), to indicate
+that the file is locked.</p>
+<p>You create a new LockFile by calling :</p>
+<pre class="literal-block">
+lockedfile = LockFile(filename, mode='r', bufsize=-1, timeout=5, step=0.1,
+    force=True)
+</pre>
+<p>This creates a file like object that is locked (using the <tt class="docutils literal"><span class="pre">Lock</span></tt> class)
+until it is closed.</p>
+<p>The file is only locked against another process that attempts to
+acquire a lock using <tt class="docutils literal"><span class="pre">Lock</span></tt> (or <tt class="docutils literal"><span class="pre">LockFile</span></tt>).</p>
+<p>The lock is released automatically when the file is closed.</p>
+<p>The filename, mode and bufsize arguments have the same meaning as for
+the built in function <tt class="docutils literal"><span class="pre">open</span></tt>.</p>
+<p>The timeout and step arguments have the same meaning as for a <tt class="docutils literal"><span class="pre">Lock</span></tt>
+object.</p>
+<p>The force argument has the same meaning as for the <tt class="docutils literal"><span class="pre">Lock.lock</span></tt> method.</p>
+<p>A <tt class="docutils literal"><span class="pre">LockFile</span></tt> object has all the normal <tt class="docutils literal"><span class="pre">file</span></tt> methods and attributes.</p>
+</div>
+<div class="section" id="usage-examples">
+<h2><a class="toc-backref" href="#id30">Usage Examples</a></h2>
+<p>Here are examples of using <tt class="docutils literal"><span class="pre">Lock</span></tt> and <tt class="docutils literal"><span class="pre">LockFile</span></tt>.</p>
+<p>Where you just want exclusive access to a file, for a single read or write
+operation, <tt class="docutils literal"><span class="pre">LockFile</span></tt> is the class to use.</p>
+<div class="pysrc"><span class="pycomment"># force=False means an error is raised if<br />
+</span><span class="pycomment"># we fail to acquire the lock<br />
+</span><span class="pytext">lockedfile</span> <span class="pyoperator">=</span> <span class="pytext">LockFile</span><span class="pyoperator">(</span><span class="pytext">filename</span><span class="pyoperator">,</span> <span class="pystring">'w'</span><span class="pyoperator">,</span> <span class="pytext">force</span><span class="pyoperator">=</span><span class="pytext">False</span><span class="pyoperator">)</span><br />
+<span class="pytext">lockedfile</span><span class="pyoperator">.</span><span class="pytext">write</span><span class="pyoperator">(</span><span class="pytext">the_file</span><span class="pyoperator">)</span><br />
+<br />
+<span class="pycomment"># close releases the lock<br />
+</span><span class="pytext">lockedfile</span><span class="pyoperator">.</span><span class="pytext">close</span><span class="pyoperator">(</span><span class="pyoperator">)</span><span class="pytext"></span></div><p>If you want to read a file, then amend it, <tt class="docutils literal"><span class="pre">Lock</span></tt> is the class to use.</p>
+<div class="pysrc"><span class="pytext">lock</span> <span class="pyoperator">=</span> <span class="pytext">Lock</span><span class="pyoperator">(</span><span class="pytext">filename</span><span class="pyoperator">)</span><br />
+<span class="pytext">lock</span><span class="pyoperator">.</span><span class="pytext">lock</span><span class="pyoperator">(</span><span class="pytext">force</span><span class="pyoperator">=</span><span class="pytext">False</span><span class="pyoperator">)</span><br />
+<span class="pytext">handle</span> <span class="pyoperator">=</span> <span class="pytext">open</span><span class="pyoperator">(</span><span class="pytext">filename</span><span class="pyoperator">)</span><br />
+<span class="pytext">data</span> <span class="pyoperator">=</span> <span class="pytext">handle</span><span class="pyoperator">.</span><span class="pytext">read</span><span class="pyoperator">(</span><span class="pyoperator">)</span><br />
+<span class="pytext">handle</span><span class="pyoperator">.</span><span class="pytext">close</span><span class="pyoperator">(</span><span class="pyoperator">)</span><br />
+<br />
+<span class="pycomment"># we've read in the file<br />
+</span><span class="pycomment"># now we do something to it<br />
+</span><span class="pytext">data</span> <span class="pyoperator">=</span> <span class="pytext">data</span><span class="pyoperator">.</span><span class="pytext">replace</span><span class="pyoperator">(</span><span class="pytext">something</span><span class="pyoperator">,</span> <span class="pytext">something_else</span><span class="pyoperator">)</span><br />
+<br />
+<span class="pycomment"># now we write out the new data<br />
+</span><span class="pytext">handle</span> <span class="pyoperator">=</span> <span class="pytext">open</span><span class="pyoperator">(</span><span class="pytext">filename</span><span class="pyoperator">,</span> <span class="pystring">'w'</span><span class="pyoperator">)</span><br />
+<span class="pytext">handle</span><span class="pyoperator">.</span><span class="pytext">write</span><span class="pyoperator">(</span><span class="pytext">data</span><span class="pyoperator">)</span><br />
+<span class="pytext">handle</span><span class="pyoperator">.</span><span class="pytext">close</span><span class="pyoperator">(</span><span class="pyoperator">)</span><br />
+<br />
+<span class="pycomment"># finally, release the lock<br />
+</span><span class="pytext">lock</span><span class="pyoperator">.</span><span class="pytext">unlock</span><span class="pyoperator">(</span><span class="pyoperator">)</span><span class="pytext"></span></div></div>
+</div>
+<div class="section" id="py2exe-support">
+<h1><a class="toc-backref" href="#id31">py2exe Support</a></h1>
+<p>A common thing for a program to need to know, is what directory is the main
+script in. This is where you may store your support files for the program.</p>
+<p>A normal Python script can usually access this information through <tt class="docutils literal"><span class="pre">__file__</span></tt>
+or <tt class="docutils literal"><span class="pre">sys.argv[0]</span></tt>. These approaches can break if your program is frozen with
+<a class="reference external" href="http://www.py2exe.org">py2exe</a> or other tools.</p>
+<p>These functions provide a portable way of determining which directory your
+program is in.</p>
+<div class="section" id="get-main-dir">
+<h2><a class="toc-backref" href="#id32">get_main_dir</a></h2>
+<pre class="literal-block">
+get_main_dir()
+</pre>
+<p>Return the script directory - whether we're frozen or not.</p>
+</div>
+<div class="section" id="main-is-frozen">
+<h2><a class="toc-backref" href="#id33">main_is_frozen</a></h2>
+<pre class="literal-block">
+main_is_frozen()
+</pre>
+<p>Return <tt class="docutils literal"><span class="pre">True</span></tt> if we're running from a frozen program.</p>
+</div>
+</div>
+<div class="section" id="other-functions">
+<h1><a class="toc-backref" href="#id34">Other Functions</a></h1>
+<div class="section" id="formatbytes">
+<h2><a class="toc-backref" href="#id35">formatbytes</a></h2>
+<pre class="literal-block">
+formatbytes(size, configdict=None, **configs)
+</pre>
+<p>Given a file size as an integer, return a nicely formatted string that
+represents the size. Has various options to control it's output.</p>
+<p>You can pass in a dictionary of arguments or keyword arguments. Keyword
+arguments override the dictionary and there are sensible defaults for options
+you don't set.</p>
+<p>Options and defaults are as follows :</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">forcekb</span> <span class="pre">=</span> <span class="pre">False</span></tt> -         If set this forces the output to be in terms
+of kilobytes and bytes only.</li>
+<li><tt class="docutils literal"><span class="pre">largestonly</span> <span class="pre">=</span> <span class="pre">True</span></tt> -    If set, instead of outputting
+<tt class="docutils literal"><span class="pre">1</span> <span class="pre">Mbytes,</span> <span class="pre">307</span> <span class="pre">Kbytes,</span> <span class="pre">478</span> <span class="pre">bytes</span></tt> it outputs using only the largest
+denominator - e.g. <tt class="docutils literal"><span class="pre">1.3</span> <span class="pre">Mbytes</span></tt> or <tt class="docutils literal"><span class="pre">17.2</span> <span class="pre">Kbytes</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">kiloname</span> <span class="pre">=</span> <span class="pre">'Kbytes'</span></tt> -    The string to use for kilobytes</li>
+<li><tt class="docutils literal"><span class="pre">meganame</span> <span class="pre">=</span> <span class="pre">'Mbytes'</span></tt> - The string to use for Megabytes</li>
+<li><tt class="docutils literal"><span class="pre">bytename</span> <span class="pre">=</span> <span class="pre">'bytes'</span></tt> -     The string to use for bytes</li>
+<li><tt class="docutils literal"><span class="pre">nospace</span> <span class="pre">=</span> <span class="pre">True</span></tt> -        If set it outputs <tt class="docutils literal"><span class="pre">1Mbytes,</span> <span class="pre">307Kbytes</span></tt>,
+notice there is no space.</li>
+</ul>
+<p>Example outputs :</p>
+<pre class="literal-block">
+19Mbytes, 75Kbytes, 255bytes
+2Kbytes, 0bytes
+23.8Mbytes
+</pre>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">It currently uses the plural form even for singular.</p>
+</div>
+</div>
+<div class="section" id="fullcopy">
+<h2><a class="toc-backref" href="#id36">fullcopy</a></h2>
+<pre class="literal-block">
+fullcopy(src, dst)
+</pre>
+<p>Copy file from src to dst.</p>
+<p>If the dst directory doesn't exist, we will attempt to create it using makedirs.</p>
+</div>
+<div class="section" id="import-path">
+<h2><a class="toc-backref" href="#id37">import_path</a></h2>
+<pre class="literal-block">
+import_path(fullpath, strict=True)
+</pre>
+<p>Import a file from the full path. Allows you to import from anywhere,
+something <tt class="docutils literal"><span class="pre">__import__</span></tt> does not do.</p>
+<p>If strict is <tt class="docutils literal"><span class="pre">True</span></tt> (the default), raise an <tt class="docutils literal"><span class="pre">ImportError</span></tt> if the module
+is found in the &quot;wrong&quot; directory.</p>
+<p>Taken from <a class="reference external" href="http://www.voidspace.org.uk/python/firedrop2/">firedrop2</a> by <a class="reference external" href="http://zephyrfalcon.org">Hans Nowak</a></p>
+</div>
+<div class="section" id="onerror">
+<h2><a class="toc-backref" href="#id38">onerror</a></h2>
+<pre class="literal-block">
+onerror(func, path, exc_info)
+</pre>
+<p>Error handler for <tt class="docutils literal"><span class="pre">shutil.rmtree</span></tt>.</p>
+<p>If the error is due to an access error (read only file), it attempts to add
+write permission and then retries.</p>
+<p>If the error is for another reason it re-raises the error.</p>
+<p>Usage : <tt class="docutils literal"><span class="pre">shutil.rmtree(path,</span> <span class="pre">onerror=onerror)</span></tt></p>
+</div>
+</div>
+<div class="section" id="changelog">
+<h1><a class="toc-backref" href="#id39">CHANGELOG</a></h1>
+<div class="section" id="id4">
+<h2><a class="toc-backref" href="#id40">2008/01/12</a></h2>
+<p>Bugfix in <tt class="docutils literal"><span class="pre">Lock.lock</span></tt>, thanks to Thomas Viner (and others) who reported it.</p>
+</div>
+<div class="section" id="version-0-2-6">
+<h2><a class="toc-backref" href="#id41">2007/11/08     Version 0.2.6</a></h2>
+<p>Bug fix in <tt class="docutils literal"><span class="pre">Lock</span></tt> corrected misspelling of <tt class="docutils literal"><span class="pre">os.path</span></tt> (thanks to Thomas Viner).</p>
+<p>Added a workaround in <tt class="docutils literal"><span class="pre">Lock</span></tt> for operating systems that don't raise
+<tt class="docutils literal"><span class="pre">os.error</span></tt> when attempting to create a directory that already exists.</p>
+</div>
+<div class="section" id="version-0-2-5">
+<h2><a class="toc-backref" href="#id42">2006/07/22      Version 0.2.5</a></h2>
+<p>Bugfix for Python 2.5 compatibility.</p>
+</div>
+<div class="section" id="version-0-2-4">
+<h2><a class="toc-backref" href="#id43">2005/12/06      Version 0.2.4</a></h2>
+<p>Fixed bug in <tt class="docutils literal"><span class="pre">onerror</span></tt> - missing import, <em>oops</em>.</p>
+</div>
+<div class="section" id="version-0-2-3">
+<h2><a class="toc-backref" href="#id44">2005/11/26      Version 0.2.3</a></h2>
+<p>Added <tt class="docutils literal"><span class="pre">Lock</span></tt>, <tt class="docutils literal"><span class="pre">LockError</span></tt>, and <tt class="docutils literal"><span class="pre">LockFile</span></tt></p>
+<p>Added <tt class="docutils literal"><span class="pre">__version__</span></tt></p>
+</div>
+<div class="section" id="version-0-2-2">
+<h2><a class="toc-backref" href="#id45">2005/11/13      Version 0.2.2</a></h2>
+<p>Added the py2exe support functions.</p>
+<p>Added <tt class="docutils literal"><span class="pre">onerror</span></tt>.</p>
+</div>
+<div class="section" id="version-0-2-1">
+<h2><a class="toc-backref" href="#id46">2005/08/28      Version 0.2.1</a></h2>
+<ul class="simple">
+<li>Added <tt class="docutils literal"><span class="pre">import_path</span></tt></li>
+<li>Added <tt class="docutils literal"><span class="pre">__all__</span></tt></li>
+<li>Code cleanup</li>
+</ul>
+</div>
+<div class="section" id="version-0-2-0">
+<h2><a class="toc-backref" href="#id47">2005/06/01      Version 0.2.0</a></h2>
+<p>Added <tt class="docutils literal"><span class="pre">walkdirs</span></tt> generator.</p>
+</div>
+<div class="section" id="version-0-1-1">
+<h2><a class="toc-backref" href="#id48">2005/03/11      Version 0.1.1</a></h2>
+<p>Added rounding to <tt class="docutils literal"><span class="pre">formatbytes</span></tt> and improved <tt class="docutils literal"><span class="pre">bytedivider</span></tt> with <tt class="docutils literal"><span class="pre">divmod</span></tt>.</p>
+<p>Now explicit keyword parameters override the <tt class="docutils literal"><span class="pre">configdict</span></tt> in <tt class="docutils literal"><span class="pre">formatbytes</span></tt>.</p>
+</div>
+<div class="section" id="version-0-1-0">
+<h2><a class="toc-backref" href="#id49">2005/02/18      Version 0.1.0</a></h2>
+<p>The first numbered version.</p>
+</div>
+</div>
+<div class="section" id="footnotes">
+<h1><a class="toc-backref" href="#id50">Footnotes</a></h1>
+<table class="docutils footnote" frame="void" id="id5" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Online at <a class="reference external" href="http://www.voidspace.org.uk/python/license.shtml">http://www.voidspace.org.uk/python/license.shtml</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id6" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>Online at <a class="reference external" href="http://www.voidspace.org.uk/python/pythonutils.html">http://www.voidspace.org.uk/python/pythonutils.html</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<a class="reference external" href="pathutils.txt">View document source</a>.
+Generated on: 2009-06-09 20:26 UTC.
+Generated by <a class="reference external" href="http://docutils.sourceforge.net/">Docutils</a> from <a class="reference external" href="http://docutils.sourceforge.net/rst.html">reStructuredText</a> source.
+
+</div>
+</body>
+</html>

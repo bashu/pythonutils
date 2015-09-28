@@ -1,0 +1,146 @@
+====================
+ The urlpath Module
+====================
+-------------------
+ Working with URLs
+-------------------
+
+:Author: Michael Foord
+:Contact: fuzzyman@voidspace.org.uk
+:Version: 0.1.0
+:Date: 2005/08/20
+:License: `BSD License`_ [#]_
+:Online Version: `urlpath online`_
+:Support: `Mailing List`_
+
+.. _Mailing List: http://groups.google.com/group/pythonutils/
+.. _`urlpath online`: http://www.voidspace.org.uk/python/urlpath.html
+.. _BSD License: BSD-LICENSE.txt
+
+.. contents:: urlpath Functions
+
+.. note::
+
+    This module is not under active development and is in 'bugfix only'
+    maintenance mode.
+
+Introduction
+============
+
+*urlpath* is a small module containing functions for working with URLs. 
+Specifically it has functions for joining relative URLs and converting file 
+paths to URLs and back again.
+
+It was created for rest2web_.
+
+It assumes URLs are composed of paths like 'path/path/resource' and that 
+relative paths indicate the parent directory by '..'.
+
+This module is a part of the pythonutils_ [#]_ package. Many of the modules in 
+this package can be seen at the `Voidspace Modules Page`_.
+
+.. _pythonutils: pythonutils.html
+.. _Voidspace Modules Page: http://www.voidspace.org.uk/python/modules.shtml
+
+
+Downloading
+-----------
+
+As well as being included in the pythonutils_ package, you can download **urlpath**
+directly from :
+
+* `urlpath.py (8k) <http://www.voidspace.org.uk/downloads/urlpath.py>`_
+
+
+pathjoin
+========
+
+::
+
+    pathjoin(base, *paths)
+    
+This function join paths to a base, observing pardir ('..').
+
+If base doesn't *end* with '/' we assume it's a file rather than a directory. 
+(So we get rid of it).
+
+This is useful if you are joining a series of relative paths to a single base.
+
+nativejoin
+==========
+
+::
+
+    nativejoin(base, path)
+ 
+Joins two paths - returning a native file path.
+
+Given a base path and a relative location, (in posix/url format) return a file 
+path in an OS native way.
+
+relpathto
+=========
+
+::
+
+    relpathto(thisdir, origin, dest)
+
+Given two paths relative to a directory, work out a path from origin
+to destination.
+
+Assumes UNIX/URL type relative paths. If origin doesn't *end* with '/' we 
+assume it's a file rather than a directory.
+
+If the same paths are passed in :
+
+    * if the path ends with ('/') then we return ''
+    * else we return the last part of the path (presumably a filename)
+
+If thisdir doesn't start with '/' then we add one (this makes the top level of 
+thisdir our root directory).
+
+relpath
+=======
+
+::
+
+    relpath(origin, dest)
+
+Given two absolute paths, work out a path from origin to destination.
+
+Assumes UNIX/URL type relative paths.
+
+If origin doesn't *end* with '/' we assume it's a file rather than
+a directory.
+
+If the same paths are passed in :
+
+    * if the path ends with ('/') then we return ''
+    * else we return the last part of the path (presumably a filename)
+
+If origin or dest don't start with '/' then we add it.
+
+We are *assuming* relative paths on the same device (i.e. same top level 
+directory).
+
+tslash
+======
+
+::
+
+    tslash(apath)
+
+Add a trailing slash (``/``) to a path if it needs one.
+
+Doesn't use ``os.sep`` because you end up jiggered on windoze - when you
+want separators for URLs.
+
+CHANGELOG
+=========
+
+See the source code for CHANGELOG (and TODO/ISSUES).
+
+.. _rest2web: http://www.voidspace.org.uk/python/rest2web/
+
+.. [#] Online at http://www.voidspace.org.uk/python/license.shtml
+.. [#] Online at http://www.voidspace.org.uk/python/pythonutils.html

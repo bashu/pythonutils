@@ -1,0 +1,738 @@
+=======================
+ An Ordered Dictionary
+=======================
+
+~~~~~~~~~~~~~~~~~~
+ The odict Module
+~~~~~~~~~~~~~~~~~~
+
+:Authors: Nicola Larosa, Michael Foord
+:Contact: nico@teknico.net, fuzzyman@voidspace.org.uk
+:Version: 0.2.2
+:Date: 2006/11/25
+:License: `BSD License`_ [#]_
+:Online Version: `odict online`_
+:Support: `Pythonutils Mailing List`_
+
+.. _`odict online`: http://www.voidspace.org.uk/python/odict.html
+.. _BSD License: BSD-LICENSE.txt
+.. _Pythonutils Mailing List: http://groups.google.com/group/pythonutils/
+
+.. contents:: The Ordered Dictionary
+
+Introduction
+============
+
+This module provides two classes: ``OrderedDict``, and ``SequenceOrderedDict``.
+The module is written and maintained by `Nicola Larosa`_ and `Michael Foord`_.
+
+The ordered dictionary is a dictionary-like object (actually a subclass of the
+normal dictionary data type) that keeps keys in insertion order.
+
+This means it has *all* the normal dictionary methods. Methods that would
+normally return values in an arbitrary order are now ordered.
+
+You can specify and alter the order, through the `setkeys method`_.
+
+Because an ordered dictionary is something like a sequence, it also has several
+`sequence methods`_. The SequenceOrderedDict_ allows you to act on the ``keys``,
+``values``, and ``items`` directly, as if they were sequences. This is
+convenient if you want to treat your object more like a sequence than a
+dictionary.
+
+This module is a part of the pythonutils_ [#]_ package. Many of the modules in 
+this package can be seen at the `Voidspace Modules Page`_ or the `Voidspace 
+Python Recipebook`_.
+
+.. important::
+
+    Most of the features of ``OrderedDict`` are compatible with Python 2.2.
+
+    Slicing is not. This is because in 2.2, you cannot index a sequence with a
+    slice object.
+
+.. _pythonutils: pythonutils.html
+.. _Voidspace Modules Page: http://www.voidspace.org.uk/python/modules.shtml
+.. _Voidspace Python Recipebook: http://www.voidspace.org.uk/python/recipebook.shtml
+
+Downloading
+~~~~~~~~~~~
+
+As well as being included in the pythonutils_ package, you can download **odict**
+directly from:
+
+* `odict.py (46KB) <http://www.voidspace.org.uk/downloads/odict.py>`_
+
+Creating an Ordered Dictionary
+==============================
+
+Creating an ordered dictionary is slightly different from a normal dictionary.
+
+You can create a new, empty, ``OrderedDict`` object in the normal way. 
+Alternatively you can initialise it from a 2-element-sequences sequence, 
+or from another ordered dictionary.
+
+.. raw:: html
+
+    {+coloring}
+
+    # creating a new ordered dictionary
+
+    # an empty one
+    >>> od = OrderedDict()
+    >>> od
+    OrderedDict([])
+
+    >>> od['key1'] = 'value 1'
+    >>> od['key2'] = 'value 2'
+    >>> od
+    OrderedDict([('key1', 'value1'), ('key2', 'value2')])
+
+    # from an OrderedDict
+    >>> od2 = OrderedDict(od)
+    >>> od2
+    OrderedDict([('key1', 'value1'), ('key2', 'value2')])
+    >>> od2 == od
+    True
+    >>> od2 is od
+    False
+
+    # from a list of tuples
+    >>> od3 = OrderedDict([('key1', 'value1'), ('key2', 'value2')])
+    >>> od3
+    OrderedDict([('key1', 'value1'), ('key2', 'value2')])
+
+    {-coloring}
+
+You *cannot* initialise a new ``OrderedDict`` directly from an ordinary 
+dictionary or from keyword arguments.
+
+If you really need to create an ordered dictionary from a normal dictionary, 
+call the latter's ``items`` method:
+
+.. raw:: html
+
+    {+coloring}
+
+    >>> od = OrderedDict(a_dict.items())
+
+    {-coloring}
+
+Obviously if you do this, the ordering is arbitrary.
+
+``OrderedDict`` also takes an optional keyword argument strict_. This
+determines whether new keys must be unique in slice assignment.
+
+Ordered Methods
+===============
+
+The ordered methods are:
+
+* ``keys``
+* ``values``
+* ``items``
+* ``iterkeys``
+* ``itervalues``
+* ``iteritems``
+* ``__iter__`` - more commonly used as ``for key in odict``
+* ``popitem`` - Delete and return the *last* item, or the item at a specified
+  index
+* ``__str__`` and ``__repr__`` - Anywhere you print or represent the object.
+
+.. _setkeys method:
+
+setkeys, setvalues, setitems
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In an ``OrderedDict`` you use the ``setkeys``, ``setvalues``, and ``setitems``
+methods to change the keys, values, and items. You do this by passing in an 
+iterable to the method.
+
+As an example:
+
+.. raw:: html
+
+    {+coloring}
+
+    >>> d = OrderedDict([(1, 3), (2, 1), (3, 2)])
+    >>> d.keys()
+    [1, 2, 3]
+    >>> newkeys = [3, 2, 1]
+    >>> d.setkeys(newkeys)
+    >>> d
+    OrderedDict([(3, 2), (2, 1), (1, 3)])
+
+    {-coloring}
+
+You can use this to re-order the keys. The new keys *must* be a permutation of
+the current keys. In other words it must be the same keys, just in a different
+order.
+
+With the ``setvalues`` method, the only requirement is that the iterable you 
+pass in must have the same number of members as the current values.
+
+With the ``setitems`` method, the items you pass in will replace the current
+set of items in the ``OrderedDict``, with no requirement on items.
+
+Ordering
+~~~~~~~~
+
+You can also use the `Sequence Methods`_ to manipulate the ordering of items
+in your dictionary.
+
+The SequenceOrderedDict_ gives you more ways to manipulate the keys, items,
+and values. It allows you to directly alter them as sequences. They are
+implemented as callable sequence objects, so they function as methods *and*
+as sequences.
+
+.. caution::
+
+    In version 0.1 of ``OrderedDict`` you manipulated the order of your
+    dictionary by accessing the ``sequence`` attribute.
+
+    This is now deprecated. It currently still works, but issues a 
+    ``DeprecationWarning``. In a future release it will go away altogether.
+
+    This used to allow you to set the order in a way that did not reflect
+    the contents of the dictionary. This is no longer possible.
+
+Sequence Methods
+================
+
+Because an ``OrderedDict`` stores items in order, it is *effectively* a 
+sequence as well as a mapping.
+
+To reflect this, it has several methods that allow you to treat instances as
+sequences.
+
+index
+~~~~~
+
+::
+
+    >>> d.index(key)
+
+Return the index of the key.
+
+insert
+~~~~~~
+
+::
+
+    >>> d.insert(index, key, value)
+
+Insert the key and value at the specified index.
+
+reverse
+~~~~~~~
+
+::
+
+    >>> d.reverse()
+
+Reverse the order of items within the dictionary.
+
+sort
+~~~~
+
+::
+
+    >>> d.sort(*args, **kwargs)
+
+Sort the order of items in the dictionary. This method takes the same arguments
+as the list method ``sort``.
+
+.. note::
+
+    This method uses the ``sort`` method *under the hood*. This means that it
+    takes the same arguments as the list method ``sort`` on the version of
+    Python on which it is being run.
+    
+    The behaviour of this method changed in both Python 2.3 and 2.4.
+
+popitem
+~~~~~~~
+
+::
+
+    >>> d.popitem(i=-1)
+
+Unlike a normal dictionary, the ``popitem`` method takes an index as the
+argument. It pops the item at that position in the dictionary.
+
+The index defaults to ``-1``, the *last* item in the dictionary.
+
+Slicing
+~~~~~~~
+
+Because an ``OrderedDict`` is a sequence, you can slice it. This includes
+slicing, slice assignment, and slice deletion. This includes using extended
+slices.
+
+Slicing an ``OrderedDict`` returns an ``OrderedDict``.
+
+You can only assign to a slice *from* an ``OrderedDict``.
+
+Here are a few examples of this:
+
+.. raw:: html
+
+    {+coloring}
+
+    # Slicing an OrderedDict
+    >>> d = OrderedDict([(7, 0), (6, 1), (5, 2), (4, 3)])
+    >>> d[::-1]
+    OrderedDict([(4, 3), (5, 2), (6, 1), (7, 0)])
+    >>> d[1:3]
+    OrderedDict([(6, 1), (5, 2)])
+    >>> type(d[1:3])
+    <class '__main__.OrderedDict'>
+
+    # Slice assignment
+    >>> d = OrderedDict([('a', 'b'), ('b', 'a'), (3, 12)])
+    >>> d[:] = OrderedDict(((1, 2), (2, 3), (3, 4)))
+    >>> d
+    OrderedDict([(1, 2), (2, 3), (3, 4)])
+    >>> d[::2] = OrderedDict(((7, 8), (9, 10)))
+    >>> d
+    OrderedDict([(7, 8), (2, 3), (9, 10)])
+
+    # Slice deletion
+    >>> d = OrderedDict([(1, 3), (2, 1), (3, 2)])
+    >>> del d[0:1]
+    >>> d
+    OrderedDict([(2, 1), (3, 2)])
+
+    {-coloring}
+
+.. _strict:
+
+The ``strict`` keyword
+----------------------
+
+There is a problem with slice assignment. You have to provide an ordered
+dictionary as the slice you are passing in - the items from this replace the
+items in the slice being replaced.
+
+The difficulty is that the ordered dictionary you are passing in *could* have
+keys that are the same as other keys in the dictionary.
+
+This means that your dictionary can change size (reduce) during slice
+assignments.
+
+If you do not want to allow this, you can set the optional keyword argument
+``strict`` to ``True`` when you create the ordered dictionary.
+
+If ``strict`` is ``True`` (``False`` is the default), then doing slice
+assignment from keys that already exist will raise a ``ValueError``.
+
+.. raw:: html
+
+    {+coloring}
+
+    >>> d = OrderedDict(((0, 1), (1, 2), (2, 3), (3, 4)), strict=True)
+    >>> d[:2]
+    OrderedDict([(0, 1), (1, 2)])
+    >>> d[2:]
+    OrderedDict([(2, 3), (3, 4)])
+    >>> d[:2] = OrderedDict([(0, 1), (1, 2), (2, 3), (3, 4), (4, 5)])
+    Traceback (most recent call last):
+    ValueError: slice assignment must be from unique keys
+
+    {-coloring}
+
+Other Methods
+=============
+
+The Ordered Dictionary also has several other methods which differ slightly 
+from their equivalent in a normal dictionary.
+
+* ``copy`` and ``deepcopy`` returns an ``OrderedDict``. 
+
+* ``update`` can only be called with an ordered dictionary as the argument, or
+  an iterable of 2-element sequences.
+
+  If you need to update an ordered dictionary from a normal dictionary, 
+  call the latter's ``items`` method:
+
+.. raw:: html
+
+    {+coloring}
+
+    >>> od = OrderedDict()
+    >>> od.update(a_dict.items())
+
+    {-coloring}
+
+  And again, if you do this, the ordering is obviously arbitrary.
+
+* ``rename`` renames a key in-place.
+
+* ``__cmp__`` (in fact I have implemented all the rich comparison methods
+  separately). You can only compare an OrderedDict with another OrderedDict. 
+
+  You can test equality and inequality (``==`` and ``!=``) with any object.
+  An Ordered Dictionary is always different from a standard dictionary, even
+  if they have the same items.
+
+  You can only do ``<`` or ``>`` with another ``OrderedDict`` (which compares
+  the items).
+
+SequenceOrderedDict
+===================
+
+The ``SequenceOrderedDict`` is a subclass of ``OrderedDict``. It has the same
+behaviour and methods.
+
+In addition to this, the ``keys``, ``items`` and ``values`` methods are
+actually custom sequence objects. They are callable, so they behave in the same
+way as the corresponding methods of ``OrderedDict``.
+
+.. caution::
+
+    Because you are adding an extra layer onto creating each instance, and
+    accessing these sequences, it is bound to not be as efficient as
+    ``OrderedDict``.
+
+    Optimisation suggestions are welcomed. {sm;:-)}
+
+Each of these objects have *all* the normal `sequence methods 
+<http://docs.python.org/lib/typesseq-mutable.html>`_, where appropriate.
+
+You can index them, slice them, assign to them, sort them, and so on. You 
+can also compare them to other sequences.
+
+.. raw:: html
+
+    {+coloring}
+
+    >>> d = SequenceOrderedDict([(1, 3), (2, 1), (3, 2)])
+    >>> d
+    SequenceOrderedDict([(1, 3), (2, 1), (3, 2)])
+    >>> d.keys
+    [1, 2, 3]
+    >>> d.keys[1]
+    2
+    >>> d.keys = [3, 2, 1]
+    >>> d.keys.sort()
+    >>> d
+    SequenceOrderedDict([(1, 3), (2, 1), (3, 2)])  
+    >>> d.keys == [1, 2, 3]
+    True
+
+    {-coloring}
+
+keys
+~~~~
+
+You cannot assign to indexes. You use the keys to re-order the ``OrderedDict``.
+That means you can do slice assignment, so long as the keys you assign are the
+same as the ones you replace (but re-ordered).
+
+You can do:
+
+.. raw:: html
+
+    {+coloring}
+
+    >>> d = SequenceOrderedDict([(1, 2), (2, 3), (3, 4)])
+    >>> d.keys[::2]
+    [1, 3]
+    >>> d.keys[::2] = (3, 1)
+    >>> d
+    SequenceOrderedDict([(3, 4), (2, 3), (1, 2)])
+
+    >>> d.keys = (1, 2, 3)
+    >>> d
+    SequenceOrderedDict([(1, 2), (2, 3), (3, 4)])
+
+    {-coloring}
+
+You cannot delete, remove, extend, append, insert, or pop keys.
+
+You also cannot add in-place, or multiply in-place.
+
+values
+~~~~~~
+
+You can assign to values by index - this changes the value in place.
+
+You cannot delete, remove, extend, append, insert, or pop values.
+
+You also cannot add in-place, or multiply in-place.
+
+items
+~~~~~
+
+The only restriction on items is that you cannot multiply them in-place.
+
+Other Use Cases
+===============
+
+The ordered dictionary keeps keys in insertion order. This is sometimes 
+called a *created order* dictionary.
+
+There are potential use cases for dictionaries that keep their keys in order,
+but the ordering being based on other criteria.
+
+You are free to change the order using the ``setkeys`` method, but you may
+prefer a dictionary that used these different criteria. For example you might
+need a dictionary that kept keys in order of the last accessed key.
+
+If you have use cases not satisfied by the current implementation, please 
+`let me know`_, and I'll look at whether it is practical to include them within
+this module.
+
+An Alternative
+==============
+
+A lot of the newer functionality of the ``OrderedDict`` comes out of a 
+discussion on ordered dictionaries on `comp.lang.python 
+<http://groups.google.com/group/comp.lang.python/browse_frm/thread/5ac716f9ad14cc04>`_.
+Particularly the methods that allow you to treat them as a sequence.
+
+In this discussion `Fredrik Lundh <http://effbot.org>`_ points out that in
+some situations it is a lot faster to store your data as a sequence of tuples.
+If you mainly want to access your data by index, it is a lot faster to do this
+and create the dictionary view when you need it.
+
+You can turn a sequence of tuples into a dictionary by using the built in
+function ``dict``, and it is a lot more efficient to do this than to create an
+ordered dictionary.
+
+.. raw:: html
+
+    {+coloring}
+    
+    >>> data_structure = [(0, 1), (1, 2), (2, 3),
+    ...     (3, 4), (4, 5), (5, 6), (6, 7),
+    ...     (7, 8), (8, 9), (9, 10), (10, 11)]
+    >>> value5 = data_structure[5][1]
+    >>> value5 == dict(data_structure)[5]
+    True
+    
+    {-coloring}
+
+The call ``dict(data_structure)`` is actually very cheap, it builds a 
+dictionary view into the data structure very quickly.
+
+This advantage disappears if you want to frequently assign to the structure as
+a dictionary, whilst retaining the order. (Searching long lists for a value is
+slower than using a dictionary structure).
+
+An ordered dictionary essentially adds an extra layer to the underlying
+implementation. Because our layer is in pure Python, it will be slower. [#]_
+
+The ordered dictionary is a *convenience*: it can make your code a lot easier
+to read and understand. Where efficiency is your main priority, you may want
+to consider an alternative view on your data structure.
+
+ISSUES
+======
+
+Slicing does not work in Python 2.2. This is because in 2.2, you cannot index
+a sequence with a slice object. It could be implemented with ``operator``
+slicing functions (which do not support extended slices).
+
+TODO
+====
+
+Addition (``__add__``)? (This would just be syntactic sugar for
+``update``.)
+
+Implement the Python 2.4 arguments (``key`` and ``reverse``) for ``sort``
+for Python 2.2 and 2.3? (So the interface is stable)
+
+Add ``move`` sequence method? (To change the index of a key from one
+position to another)
+
+All assignment by index, on ``SequenceOrderedDict.keys``, to rename a key?
+
+Do I *need* to implement ``__cmp__`` - I do not *think* so?
+
+Allow slice assignment to ``OrderedDict`` (and possibly
+``SequenceOrderedDict.items``) from list of tuples as well as from an
+``OrderedDict``?
+
+CHANGELOG
+=========
+
+2006/11/25
+~~~~~~~~~~
+
+By Nicola Larosa
+
+Version 0.2.2
+
+Code
+----
+
+Removed the TODO and CHANGELOG sections in the tail docstring (they are
+here anyway).
+
+Disabled warnings during tests.
+
+Explicitly disabled tests execution on Python v.2.2 . In addition to the 
+slicing tests, other ones are failing.
+
+Removed code duplication between the ``__init__`` and the ``update`` methods.
+
+Misc. cleanup.
+
+Also, based on code from `Tim Wegener`_:
+
+- added the ``rename`` method;
+- removed a ``has_key`` usage in the ``__setitem__`` method.
+
+Documentation
+-------------
+
+Moved the ISSUES chapter from code's tail docstring to here.
+
+Moved up the `Creating an Ordered Dictionary`_ chapter.
+
+Added prompts to the code examples (why were they missing?) and removed
+the superfluous print statements (sometimes they were there, sometimes
+they were not).
+
+Misc. cleanup.
+
+2005/12/17
+~~~~~~~~~~
+
+You can now test for equality and inequality with objects (except for
+dictionaries for which it is undefined). This allows you to do tests like::
+
+    OrderedDict() == False
+
+Added the ``strict`` keyword, which raises a ``ValueError`` if you do slice
+assignment with keys that are already in the dictionary.
+
+Assignment to ``keys`` in ``SequenceOrderedDict`` is now only for
+re-ordering the keys.
+
+Fixed bug where slice assignment to ``keys`` could lose information. (and
+optimised by slicing ranges to get the indexes we are assigning to instead
+of indexing each key).
+
+You change keys, items, and values through new methods ``setkeys``,
+``setitems``, and ``setvalues`` methods.
+
+Minor changes, thanks to Christoph Zwerschke for suggestions.
+
+Added ``__deepcopy__`` method (previously deepcopy failed).
+
+Changed use of ``slice`` to ``types.SliceType`` for Python 2.2.
+
+Version 0.2.1
+
+2005/12/02
+~~~~~~~~~~
+
+Fixed bugs in ``__getattr__`` and ``popitem``
+
+Optimisation in ``OrderedDict.__init__`` when creating an instance from an
+``OrderedDict``
+
+Changed ``FancyODict`` to ``SequenceOrderedDict``
+
+Implemented new ``__repr__``
+
+Version 0.2.0
+
+2005/12/01
+~~~~~~~~~~
+
+Added index to ``OrderedDict.popitem``
+
+2005/11/30
+~~~~~~~~~~
+
+Implemented ``FancyODict``, which has ``keys``, ``items``, ``values`` as
+custom, callable, sequence objects.
+
+2005/11/26
+~~~~~~~~~~
+
+By Michael Foord - from suggestions on comp.lang.python
+
+Hidden the ``sequence`` attribute
+
+``items``, ``keys``, ``values`` can now take a list to replace the current
+keys, values, or items
+
+Implemented slicing (including deleting a slice and assigning to a slice)
+
+Implemented sequence methods ``sort``, ``reverse``, ``insert``, ``index``
+
+2005/09/10
+~~~~~~~~~~
+
+By Nicola Larosa, based on code from `Tim Wegener`_.
+
+Create itervalues and iteritems without creating the list up-front
+
+Added doctests for iter methods, and others.
+
+Optimized __setitem__ to be O(1) rather than O(N)
+
+Removed redefined methods that did not alter dict method behaviour,
+  related doctests moved to the class docstring
+
+Added support for sequences of (key, value) pairs to update
+
+Removed redundant condition from __eq__
+
+Removed incorrect implementation of __str__
+
+2005/08/28
+~~~~~~~~~~
+
+By Michael Foord
+
+Added __all__
+
+More than two arguments to ``pop`` now raises an error
+
+Version 0.1.0 finalised
+
+2005/08/13
+~~~~~~~~~~
+
+By Nicola Larosa
+
+Added doctests everywhere, fixed a good chunk of implementation
+
+Added comments at top, other doc vars
+
+2005/08/01
+~~~~~~~~~~
+
+By Michael Foord
+
+Type tests changed to isinstance
+
+_keys changed to sequence attribute
+
+Allowed creating a dictionary by passing keyword arguments
+
+Shortened __repr__
+
+Fixed bug in popitem
+
+Other minor changes
+
+------
+
+Footnotes
+=========
+
+.. [#] Online at http://www.voidspace.org.uk/python/license.shtml
+.. [#] Online at http://www.voidspace.org.uk/python/pythonutils.html
+.. [#] Implementing an ordered dictionary in C would change this.
+
+.. _Michael Foord: http://www.voidspace.org.uk/index2.shtml
+.. _Nicola Larosa: http://www.teknico.net/
+.. _Tim Wegener: twegener@radlogic.com.au
+.. _let me know: fuzzyman@voidspace.org.uk
+

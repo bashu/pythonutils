@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>The cgiutils Module</title>
+<meta name="author" content="Michael Foord" />
+<meta name="date" content="2009/06/08" />
+<link rel="stylesheet" href="stylesheets/voidspace_docutils.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="the-cgiutils-module">
+<h1 class="title">The cgiutils Module</h1>
+<h2 class="subtitle" id="cgi-helper-stuff">CGI Helper Stuff</h2>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Author:</th>
+<td><a class="first last reference external" href="http://www.voidspace.org.uk/python/index.shtml">Michael Foord</a></td></tr>
+<tr><th class="docinfo-name">Contact:</th>
+<td><a class="first last reference external" href="mailto:fuzzyman&#37;&#52;&#48;voidspace&#46;org&#46;uk">fuzzyman<span>&#64;</span>voidspace<span>&#46;</span>org<span>&#46;</span>uk</a></td></tr>
+<tr><th class="docinfo-name">Version:</th>
+<td>0.3.6</td></tr>
+<tr><th class="docinfo-name">Date:</th>
+<td>2009/06/08</td></tr>
+<tr class="field"><th class="docinfo-name">License:</th><td class="field-body"><a class="reference external" href="BSD-LICENSE.txt">BSD License</a> <a class="footnote-reference" href="#id4" id="id1">[1]</a></td>
+</tr>
+<tr class="field"><th class="docinfo-name">Online Version:</th><td class="field-body"><a class="reference external" href="http://www.voidspace.org.uk/python/cgiutils.html">cgiutils online</a></td>
+</tr>
+<tr class="field"><th class="docinfo-name">Support:</th><td class="field-body"><a class="reference external" href="http://groups.google.com/group/pythonutils/">Mailing List</a></td>
+</tr>
+</tbody>
+</table>
+<div class="contents topic" id="cgiutils-manual">
+<p class="topic-title first">cgiutils Manual</p>
+<ul class="simple">
+<li><a class="reference internal" href="#introduction" id="id7">Introduction</a><ul>
+<li><a class="reference internal" href="#downloading" id="id8">Downloading</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#constants" id="id9">Constants</a></li>
+<li><a class="reference internal" href="#dealing-with-cgi-forms" id="id10">Dealing With CGI Forms</a><ul>
+<li><a class="reference internal" href="#getrequest" id="id11">getrequest</a></li>
+<li><a class="reference internal" href="#getform" id="id12">getform</a></li>
+<li><a class="reference internal" href="#getall" id="id13">getall</a></li>
+<li><a class="reference internal" href="#other-form-functions" id="id14">Other Form Functions</a><ul>
+<li><a class="reference internal" href="#isblank" id="id15">isblank</a></li>
+<li><a class="reference internal" href="#formencode" id="id16">formencode</a></li>
+<li><a class="reference internal" href="#formdecode" id="id17">formdecode</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#functions-for-handling-email" id="id18">Functions for Handling Email</a><ul>
+<li><a class="reference internal" href="#mailme" id="id19">mailme</a></li>
+<li><a class="reference internal" href="#sendmailme" id="id20">sendmailme</a></li>
+<li><a class="reference internal" href="#createhtmlmail" id="id21">createhtmlmail</a></li>
+<li><a class="reference internal" href="#environdata" id="id22">environdata</a></li>
+<li><a class="reference internal" href="#validemail" id="id23">validemail</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#templating-and-output" id="id24">Templating and Output</a><ul>
+<li><a class="reference internal" href="#cgiprint" id="id25">cgiprint</a></li>
+<li><a class="reference internal" href="#ucgiprint" id="id26">ucgiprint</a></li>
+<li><a class="reference internal" href="#replace" id="id27">replace</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#other-functions" id="id28">Other Functions</a><ul>
+<li><a class="reference internal" href="#error" id="id29">error</a></li>
+<li><a class="reference internal" href="#makeindexline" id="id30">makeindexline</a></li>
+<li><a class="reference internal" href="#istrue" id="id31">istrue</a></li>
+<li><a class="reference internal" href="#randomstring" id="id32">randomstring</a></li>
+<li><a class="reference internal" href="#blacklisted" id="id33">blacklisted</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#todo-issues" id="id34">TODO/ISSUES</a></li>
+<li><a class="reference internal" href="#changelog" id="id35">CHANGELOG</a><ul>
+<li><a class="reference internal" href="#version-0-3-6" id="id36">2009/06/08      Version 0.3.6</a></li>
+<li><a class="reference internal" href="#version-0-3-5" id="id37">2005/11/26      Version 0.3.5</a></li>
+<li><a class="reference internal" href="#version-0-3-4" id="id38">2005/10/29      Version 0.3.4</a></li>
+<li><a class="reference internal" href="#version-0-3-3" id="id39">2005/09/21      Version 0.3.3</a></li>
+<li><a class="reference internal" href="#version-0-3-2" id="id40">2005/08/27      Version 0.3.2</a></li>
+<li><a class="reference internal" href="#version-0-3-1" id="id41">2005/08/20      Version 0.3.1</a></li>
+<li><a class="reference internal" href="#version-0-3-0" id="id42">2005/04/07      Version 0.3.0</a></li>
+<li><a class="reference internal" href="#version-0-2-0" id="id43">2005/03/20      Version 0.2.0</a></li>
+<li><a class="reference internal" href="#version-0-1-0" id="id44">2005/02/18      Version 0.1.0</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#footnotes" id="id45">Footnotes</a></li>
+</ul>
+</div>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">This module is not under active development and is in 'bugfix only'
+maintenance mode.</p>
+</div>
+<div class="section" id="introduction">
+<h1><a class="toc-backref" href="#id7">Introduction</a></h1>
+<p>The <em>cgiutils</em> module contains functions and constants that are useful when
+writing Python CGIs. <acronym title="Common Gateway Interface">CGI</acronym> is the simplest way of
+delivering dynamic content across the internet. Python is particularly good at
+text processing - which is a major component of delivering html, part of most
+CGIs.</p>
+<p>Of <em>particular</em> interest might be the functions for sending emails
+programmatically (using sendmail <em>or</em> the smtplib), a function for generating
+a set of links to many pages, and the <acronym title="Domain Name System">DNS</acronym> blacklist
+lookup.</p>
+<p>There's some other interesting stuff in here as well - like functions to do
+things that every CGI has to cope with. They are most useful for simple
+scripts, where a full blown framework would be too cumbersome.</p>
+<p>For some uesful Python CGI applications see the <a class="reference external" href="http://www.voidspace.org.uk/python/cgi.shtml">Voidspace CGI Page</a>.</p>
+<p>This module is a part of the <a class="reference external" href="pythonutils.html">pythonutils</a> <a class="footnote-reference" href="#id5" id="id2">[2]</a> package. Many of the modules in
+this package can be seen at the <a class="reference external" href="http://www.voidspace.org.uk/python/modules.shtml">Voidspace Modules Page</a>  or the
+<a class="reference external" href="http://www.voidspace.org.uk/python/recipebook.shtml">Voidspace Python Recipebook</a>.</p>
+<div class="section" id="downloading">
+<h2><a class="toc-backref" href="#id8">Downloading</a></h2>
+<p>As well as being included in the <a class="reference external" href="pythonutils.html">pythonutils</a> package, you can download <strong>cgiutils</strong>
+directly from :</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.voidspace.org.uk/downloads/cgiutils.py">cgiutils.py (20k)</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="constants">
+<h1><a class="toc-backref" href="#id9">Constants</a></h1>
+<p><em>cgiutils</em> contains the following constants :</p>
+<div class="pysrc"><span class="pytext">serverline</span> <span class="pyoperator">=</span> <span class="pystring">"Content-Type: text/html"</span><br />
+<br />
+<span class="pycomment"># A common location of sendmail on servers<br />
+</span><span class="pytext">SENDMAIL</span> <span class="pyoperator">=</span> <span class="pystring">"/usr/sbin/sendmail"</span><br />
+<span class="pytext">validchars</span> <span class="pyoperator">=</span> <span class="pystring">'abcdefghijklmnopqrstuvwxyz0123456789!-_*'</span><br />
+<span class="pytext">alphanums</span> <span class="pyoperator">=</span> <span class="pystring">'abcdefghijklmnopqrstuvwxyz0123456789'</span><span class="pytext"></span></div></div>
+<div class="section" id="dealing-with-cgi-forms">
+<h1><a class="toc-backref" href="#id10">Dealing With CGI Forms</a></h1>
+<p>These are a set of convenience functions for handling CGI forms (instances of
+<tt class="docutils literal"><span class="pre">cgi.FieldStorage</span></tt>). They turn your form into a normal Python dictionary.</p>
+<p>You can either use <tt class="docutils literal"><span class="pre">getform</span></tt> or <tt class="docutils literal"><span class="pre">getall</span></tt> directly - or use <tt class="docutils literal"><span class="pre">getrequest</span></tt>,
+which avoids you having to instantiate a <tt class="docutils literal"><span class="pre">cgi.FieldStorage</span></tt> at all.</p>
+<p>These functions don't yet support file uploads <a class="footnote-reference" href="#id6" id="id3">[3]</a>.</p>
+<div class="section" id="getrequest">
+<h2><a class="toc-backref" href="#id11">getrequest</a></h2>
+<pre class="literal-block">
+getrequest(valuelist=None, nolist=False)
+</pre>
+<p>Initialise the <tt class="docutils literal"><span class="pre">FieldStorage</span></tt> and return the specified list of values as a
+dictionary.</p>
+<p>If you don't specify a list of values, then <em>all</em> values will be returned.</p>
+<p>If you set <tt class="docutils literal"><span class="pre">nolist</span></tt> to <tt class="docutils literal"><span class="pre">True</span></tt> then any parameters supplied as lists
+will only have their first entry returned.</p>
+</div>
+<div class="section" id="getform">
+<h2><a class="toc-backref" href="#id12">getform</a></h2>
+<pre class="literal-block">
+getform(valuelist, theform, notpresent='', nolist=False)
+</pre>
+<p>This function, given a CGI form (<tt class="docutils literal"><span class="pre">cgi.FieldStorage</span></tt> instance), extracts the
+data from it, based on valuelist passed in. Any non-present values are set to
+<tt class="docutils literal"><span class="pre">''</span></tt> - although this can be changed.</p>
+<p>It also takes a keyword argument 'nolist'. If this is <tt class="docutils literal"><span class="pre">True</span></tt> list values only
+return their first value.</p>
+<p>Returns a dictionary.</p>
+</div>
+<div class="section" id="getall">
+<h2><a class="toc-backref" href="#id13">getall</a></h2>
+<pre class="literal-block">
+getall(theform, nolist=False)
+</pre>
+<p>Passed a form (FieldStorage instance) return all the values.</p>
+<p>Also accepts the 'nolist' keyword argument as <tt class="docutils literal"><span class="pre">getform</span></tt>.</p>
+<p>Returns a dictionary.</p>
+</div>
+<div class="section" id="other-form-functions">
+<h2><a class="toc-backref" href="#id14">Other Form Functions</a></h2>
+<p>A few more functions that can be convenient for dealing with CGI forms.</p>
+<div class="section" id="isblank">
+<h3><a class="toc-backref" href="#id15">isblank</a></h3>
+<pre class="literal-block">
+isblank(indict)
+</pre>
+<p>Passed an indict of values it checks if any of the values are set.</p>
+<p>Returns <tt class="docutils literal"><span class="pre">True</span></tt> if every member of the indict is empty.</p>
+<p>I use it on a form processed with getform to tell if my CGI has been activated
+without any values.</p>
+</div>
+<div class="section" id="formencode">
+<h3><a class="toc-backref" href="#id16">formencode</a></h3>
+<pre class="literal-block">
+formencode(theform)
+</pre>
+<p>A version that turns a cgi form into a single encoded string.</p>
+<p>It only handles single and list values, not multipart.</p>
+<p>This allows the contents of a form requested to be encoded into a single value
+as part of another request.</p>
+</div>
+<div class="section" id="formdecode">
+<h3><a class="toc-backref" href="#id17">formdecode</a></h3>
+<pre class="literal-block">
+formdecode(thestring):
+</pre>
+<p>Decode a single string back into a form like dictionary.</p>
+</div>
+</div>
+</div>
+<div class="section" id="functions-for-handling-email">
+<h1><a class="toc-backref" href="#id18">Functions for Handling Email</a></h1>
+<p>These functions are used to send emails (including html emails) from Python.
+They are in this module because it is common to require your CGI application
+to email you (or the user) when an action is performed.</p>
+<p><tt class="docutils literal"><span class="pre">mailme</span></tt> is the high level function which provides a single interface to
+sending html and/or text emails. Either via <tt class="docutils literal"><span class="pre">sendmail</span></tt> or <tt class="docutils literal"><span class="pre">smtplib</span></tt>.</p>
+<p>For creating an html email (optionally with an embedded text version) then use
+<tt class="docutils literal"><span class="pre">createhtmlmail</span></tt>.</p>
+<div class="section" id="mailme">
+<h2><a class="toc-backref" href="#id19">mailme</a></h2>
+<pre class="literal-block">
+mailme(to_email, msg, email_subject=None, from_email=None,
+        host='localhost', port=25, username=None, password=None,
+        html=True, sendmail=None):
+</pre>
+<p>This function will send an email using <tt class="docutils literal"><span class="pre">sendmail</span></tt> or <tt class="docutils literal"><span class="pre">smtplib</span></tt>, depending
+on what parameters you pass it.</p>
+<p>If you want to use <tt class="docutils literal"><span class="pre">sendmail</span></tt> to send the email then set
+<tt class="docutils literal"><span class="pre">sendmail='/path/to/sendmail'</span></tt>. (The <tt class="docutils literal"><span class="pre">SENDMAIL</span></tt> value from <a class="reference internal" href="#constants">Constants</a> often
+works).</p>
+<p>If you aren't using sendmail then you will need to set <tt class="docutils literal"><span class="pre">host</span></tt> and <tt class="docutils literal"><span class="pre">port</span></tt> to
+the correct values. If your server requires authentication then you'll need to
+supply the correct <tt class="docutils literal"><span class="pre">username</span></tt> and <tt class="docutils literal"><span class="pre">password</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">to_email</span></tt> can be a single email address, <em>or</em> a list of addresses.</p>
+<p><tt class="docutils literal"><span class="pre">mailme</span></tt> <em>assumes</em> you are sending an html email created by
+<tt class="docutils literal"><span class="pre">createhtmlmail</span></tt>. If this isn't the case then set <tt class="docutils literal"><span class="pre">html=False</span></tt>.</p>
+<p>Some servers won't let you send a message without supplying a <tt class="docutils literal"><span class="pre">from_email</span></tt>.</p>
+</div>
+<div class="section" id="sendmailme">
+<h2><a class="toc-backref" href="#id20">sendmailme</a></h2>
+<pre class="literal-block">
+sendmailme(to_email, msg, email_subject=None, from_email=None,
+            html=True, sendmail=SENDMAIL):
+</pre>
+<p>Quick and dirty, pipe a message to sendmail. Can only work on UNIX type systems
+with sendmail.</p>
+<p>Will need the path to sendmail - defaults to the 'SENDMAIL' constant.</p>
+<p><tt class="docutils literal"><span class="pre">to_email</span></tt> can be a single email address, <em>or</em> a list of addresses.</p>
+<p><em>Assumes</em> you are sending an html email created by <tt class="docutils literal"><span class="pre">createhtmlmail</span></tt>. If this
+isn't the case then set <tt class="docutils literal"><span class="pre">html=False</span></tt>.</p>
+</div>
+<div class="section" id="createhtmlmail">
+<h2><a class="toc-backref" href="#id21">createhtmlmail</a></h2>
+<pre class="literal-block">
+createhtmlmail(subject, html, text=None)
+</pre>
+<p>Create a mime-message that will render as HTML or text as appropriate.
+If no text is supplied we use htmllib to guess a text rendering. (so the html
+needs to be well formed).</p>
+<p>Adapted from recipe 13.5 from Python Cookbook 2.</p>
+</div>
+<div class="section" id="environdata">
+<h2><a class="toc-backref" href="#id22">environdata</a></h2>
+<pre class="literal-block">
+environdata()
+</pre>
+<p>Returns some data about the CGI environment, in a way that can be mailed. (As a
+single string).</p>
+</div>
+<div class="section" id="validemail">
+<h2><a class="toc-backref" href="#id23">validemail</a></h2>
+<pre class="literal-block">
+validemail(email):
+</pre>
+<p>A quick function to do a <em>basic</em> email validation.</p>
+<p>Returns <tt class="docutils literal"><span class="pre">False</span></tt> or the email address.</p>
+</div>
+</div>
+<div class="section" id="templating-and-output">
+<h1><a class="toc-backref" href="#id24">Templating and Output</a></h1>
+<p>These functions implement functions performed in one way or another by
+<em>most</em> CGIs. Outputting to <tt class="docutils literal"><span class="pre">stdout</span></tt> and a basic html templating
+system.</p>
+<div class="section" id="cgiprint">
+<h2><a class="toc-backref" href="#id25">cgiprint</a></h2>
+<pre class="literal-block">
+cgiprint(inline='', unbuff=False, line_end='\r\n')
+</pre>
+<p>Print to the <tt class="docutils literal"><span class="pre">stdout</span></tt>.</p>
+<p>Set <tt class="docutils literal"><span class="pre">unbuff=True</span></tt> to flush the buffer after every write.</p>
+<p>It prints the inline you send it, followed by the <tt class="docutils literal"><span class="pre">line_end</span></tt>. By default this
+is <tt class="docutils literal"><span class="pre">\r\n</span></tt> - which is the standard specified by the RFC for http headers.</p>
+</div>
+<div class="section" id="ucgiprint">
+<h2><a class="toc-backref" href="#id26">ucgiprint</a></h2>
+<pre class="literal-block">
+ucgiprint(inline='', unbuff=False, encoding='UTF-8', line_end='\r\n')
+</pre>
+<p>A unicode version of <tt class="docutils literal"><span class="pre">cgiprint</span></tt>. It allows you to store everything in your
+script as unicode and just do your encoding in one place.</p>
+<p>Print to the <tt class="docutils literal"><span class="pre">stdout</span></tt>.</p>
+<p>Set <tt class="docutils literal"><span class="pre">unbuff=True</span></tt> to flush the buffer after every write.</p>
+<p>It prints the inline you send it, followed by the <tt class="docutils literal"><span class="pre">line_end</span></tt>. By default this
+is <tt class="docutils literal"><span class="pre">\r\n</span></tt> - which is the standard specified by the RFC for http headers.</p>
+<p><tt class="docutils literal"><span class="pre">inline</span></tt> should be a unicode string.</p>
+<p><tt class="docutils literal"><span class="pre">encoding</span></tt> is the encoding used to encode <tt class="docutils literal"><span class="pre">inline</span></tt> to a byte-string. It
+defaults to <tt class="docutils literal"><span class="pre">UTF-8</span></tt>, set it to <tt class="docutils literal"><span class="pre">None</span></tt> if you pass in <tt class="docutils literal"><span class="pre">inline</span></tt> as a byte
+string rather than a unicode string.</p>
+</div>
+<div class="section" id="replace">
+<h2><a class="toc-backref" href="#id27">replace</a></h2>
+<pre class="literal-block">
+replace(instring, indict)
+</pre>
+<p>This function provides a simple but effective template system for your html
+pages. Effectively it is a convenient way of doing multiple replaces in a
+single string.</p>
+<p>Takes a string and a dictionary of replacements.</p>
+<p>This function goes through the string and replaces every occurrence of every
+dictionary key with it's value.</p>
+<p><tt class="docutils literal"><span class="pre">indict</span></tt> can also be a list of tuples instead of a dictionary (or anything
+accepted by the dict function).</p>
+<p>As an example you could use it like :</p>
+<div class="pysrc"><span class="pytext">template</span> <span class="pyoperator">=</span> <span class="pystring">'''<br />
+&lt;html&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;head&gt;&lt;title&gt;**title**&lt;/title&gt;&lt;/head&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;body&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;**title**&lt;/h1&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gt;**sub title**&lt;/h2&gt;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;**body**&lt;/p&gt;<br />
+&nbsp;&nbsp; &lt;/body&gt;<br />
+&lt;/html&gt;'''</span><br />
+<span class="pycomment">#<br />
+</span><span class="pytext">indict</span> <span class="pyoperator">=</span> <span class="pyoperator">{</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="pystring">'**title**'</span><span class="pyoperator">:</span> <span class="pystring">'This is a Title'</span><span class="pyoperator">,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="pystring">'**sub title**'</span><span class="pyoperator">:</span> <span class="pystring">'This is a Sub-Title'</span><span class="pyoperator">,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="pystring">'**body**'</span><span class="pyoperator">:</span> <span class="pystring">'This is the body text.'</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="pyoperator">}</span><br />
+<span class="pycomment">#<br />
+</span><span class="pycomment"># print the headers<br />
+</span><span class="pytext">cgiprint</span><span class="pyoperator">(</span><span class="pytext">serverline</span><span class="pyoperator">)</span><br />
+<span class="pycomment"># followed by the blank line<br />
+</span><span class="pytext">cgiprint</span><span class="pyoperator">(</span><span class="pyoperator">)</span><br />
+<span class="pycomment">#<br />
+</span><span class="pycomment"># put the values into the template<br />
+</span><span class="pytext">out_page</span> <span class="pyoperator">=</span> <span class="pytext">replace</span><span class="pyoperator">(</span><span class="pytext">template</span><span class="pyoperator">,</span> <span class="pytext">indict</span><span class="pyoperator">)</span><br />
+<span class="pycomment">#<br />
+</span><span class="pycomment"># print that as well<br />
+</span><span class="pytext">cgiprint</span><span class="pyoperator">(</span><span class="pytext">out_page</span><span class="pyoperator">)</span><span class="pytext"></span></div></div>
+</div>
+<div class="section" id="other-functions">
+<h1><a class="toc-backref" href="#id28">Other Functions</a></h1>
+<p>These are a set of functions that don't fit together in convenient categories
+ <img src="/smilies/smile.gif" alt="Smile" height="15" width="15" /> .</p>
+<div class="section" id="error">
+<h2><a class="toc-backref" href="#id29">error</a></h2>
+<pre class="literal-block">
+error(errorval='')
+</pre>
+<p>An ultra-simple generic error function.</p>
+<p>This function implements a very dumb error page that reports an error. It uses
+the string you provide as a level three centered header.</p>
+</div>
+<div class="section" id="makeindexline">
+<h2><a class="toc-backref" href="#id30">makeindexline</a></h2>
+<pre class="literal-block">
+makeindexline(url, startpage, total, numonpage=10, pagesonscreen=5)
+</pre>
+<p>Make a menu line for a given number of inputs, with a certain number per page.
+Will look something like :</p>
+<pre class="literal-block">
+First  Previous  22 23 24 25 26 27 28 29 30 31 32  Next  Last
+</pre>
+<p>Each number or word will be a link to the relevant page.</p>
+<p>url should be in the format : <tt class="docutils literal"><span class="pre">'&lt;a</span> <span class="pre">href=&quot;script.py?start=%s&quot;&gt;%s&lt;/a&gt;'</span></tt> -
+it will have the two <tt class="docutils literal"><span class="pre">%s</span></tt> values filled in by the function.</p>
+<p>The url will automatically be put between <tt class="docutils literal"><span class="pre">&lt;strong&gt;&lt;/strong&gt;</span></tt> tags. Your
+script needs to accepts a parameter <tt class="docutils literal"><span class="pre">start</span></tt> telling it which page to display.</p>
+<p><tt class="docutils literal"><span class="pre">startpage</span></tt> is the page actually being viewed - which won't be a link.</p>
+<p><tt class="docutils literal"><span class="pre">total</span></tt> is the number of total inputs.</p>
+<p><tt class="docutils literal"><span class="pre">numonpage</span></tt> is the number of inputs per page - this tells makeindexline how
+many pages to divide the total into.</p>
+<p>The links shown will be some before startpage and some after. The amount of
+pages links are shown for is <tt class="docutils literal"><span class="pre">pagesonscreen</span></tt>. (The actual total number shown
+will be <em>2 * pagesonscreen + 1</em>).</p>
+<p>The indexes generated are <em>a bit</em> like the ones created by google. Unlike
+google however, next and previous jump you into the <em>middle</em> of the next set of
+links. i.e. If you are on page 27 next will take you to 33 and previous to 21.
+(assuming pagesonscreen is 5). This makes it possible to jump more quickly
+through a lot of links. Also - the current page will always be in the center of
+the index. (So you never <em>need</em> Next just to get to the next page).</p>
+</div>
+<div class="section" id="istrue">
+<h2><a class="toc-backref" href="#id31">istrue</a></h2>
+<pre class="literal-block">
+istrue(value)
+</pre>
+<p>Accepts a string as input.</p>
+<p>If the string is one of  <tt class="docutils literal"><span class="pre">True</span></tt>, <tt class="docutils literal"><span class="pre">On</span></tt>, <tt class="docutils literal"><span class="pre">Yes</span></tt>, or <tt class="docutils literal"><span class="pre">1</span></tt> it returns
+<tt class="docutils literal"><span class="pre">True</span></tt>.</p>
+<p>If the string is one of  <tt class="docutils literal"><span class="pre">False</span></tt>, <tt class="docutils literal"><span class="pre">Off</span></tt>, <tt class="docutils literal"><span class="pre">No</span></tt>, or <tt class="docutils literal"><span class="pre">0</span></tt> it returns
+<tt class="docutils literal"><span class="pre">False</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">istrue</span></tt> is not case sensitive.</p>
+<p>Any other input will raise a <tt class="docutils literal"><span class="pre">KeyError</span></tt>.</p>
+</div>
+<div class="section" id="randomstring">
+<h2><a class="toc-backref" href="#id32">randomstring</a></h2>
+<pre class="literal-block">
+randomstring(length)
+</pre>
+<p>Return a random string of length 'length'.</p>
+<p>The string is comprised only of numbers and lowercase letters.</p>
+</div>
+<div class="section" id="blacklisted">
+<h2><a class="toc-backref" href="#id33">blacklisted</a></h2>
+<pre class="literal-block">
+blacklisted(ip, DNSBL_HOST='sbl-xbl.spamhaus.org')
+</pre>
+<p>Returns <tt class="docutils literal"><span class="pre">True</span></tt> if ip address is a blacklisted IP (i.e. from a spammer).</p>
+<p>ip can also be a domain name - this raises <tt class="docutils literal"><span class="pre">socket.gaierror</span></tt> if the ip is a
+domain name that cannot be resolved.</p>
+<p>The DNS blacklist host (<tt class="docutils literal"><span class="pre">DNSBL_HOST</span></tt>) defaults to <em>sbl-xbl.spamhaus.org</em>.</p>
+<p>Other ones you could use include :</p>
+<ul class="simple">
+<li>'dns.rfc-ignorant.org'</li>
+<li>'postmaster.rfc-ignorant.org'</li>
+<li>'http.dnsbl.sorbs.net'</li>
+<li>'misc.dnsbl.sorbs.net'</li>
+<li>'spam.dnsbl.sorbs.net'</li>
+<li>'bl.spamcop.net'</li>
+</ul>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p>Another, possibly more effective, way of coping with spam input to web
+applications is to use the <a class="reference external" href="http://akismet.com">Akismet Web Service</a>.</p>
+<p class="last">For this you can use the
+<a class="reference external" href="http://www.voidspace.org.uk/python/modules.shtml#akismet">Python Akismet API Interface</a>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="todo-issues">
+<h1><a class="toc-backref" href="#id34">TODO/ISSUES</a></h1>
+<p>The indexes generated by makeindexline use next to jump 10 pages. This is
+different to what people will expect if they are used to the 'Google' type
+index lines.</p>
+<p>createhtmlmail assumes iso-8859-1 input encoding for the html</p>
+<p>email functions to support 'cc' and 'bcc'</p>
+<p>Need doctests</p>
+</div>
+<div class="section" id="changelog">
+<h1><a class="toc-backref" href="#id35">CHANGELOG</a></h1>
+<div class="section" id="version-0-3-6">
+<h2><a class="toc-backref" href="#id36">2009/06/08      Version 0.3.6</a></h2>
+<p>Removed a defunct blacklist server from the <tt class="docutils literal"><span class="pre">blacklisted</span></tt> function.</p>
+</div>
+<div class="section" id="version-0-3-5">
+<h2><a class="toc-backref" href="#id37">2005/11/26      Version 0.3.5</a></h2>
+<p>Add the <tt class="docutils literal"><span class="pre">blacklisted</span></tt> function.</p>
+<p>Added <tt class="docutils literal"><span class="pre">__version__</span></tt>.</p>
+</div>
+<div class="section" id="version-0-3-4">
+<h2><a class="toc-backref" href="#id38">2005/10/29      Version 0.3.4</a></h2>
+<p>Shortened <tt class="docutils literal"><span class="pre">isblank</span></tt>.</p>
+</div>
+<div class="section" id="version-0-3-3">
+<h2><a class="toc-backref" href="#id39">2005/09/21      Version 0.3.3</a></h2>
+<p>Fixed bug in <tt class="docutils literal"><span class="pre">getall</span></tt>.</p>
+<p>Fixed bug in <tt class="docutils literal"><span class="pre">getrequest</span></tt>.</p>
+</div>
+<div class="section" id="version-0-3-2">
+<h2><a class="toc-backref" href="#id40">2005/08/27      Version 0.3.2</a></h2>
+<p>Large dictionary replaces use a regex approach.</p>
+</div>
+<div class="section" id="version-0-3-1">
+<h2><a class="toc-backref" href="#id41">2005/08/20      Version 0.3.1</a></h2>
+<p>Improved istrue function.</p>
+<p>Added __all__.</p>
+<p>Various other code/doc improvements.</p>
+</div>
+<div class="section" id="version-0-3-0">
+<h2><a class="toc-backref" href="#id42">2005/04/07      Version 0.3.0</a></h2>
+<p>Changed the email functions, this may break things (but it's better this way)</p>
+<p>Added createhtmlemail, removed loginmailme</p>
+<p>mailme is now a wrapper for sendmailme, mailme, <em>and</em> the old loginmailme</p>
+</div>
+<div class="section" id="version-0-2-0">
+<h2><a class="toc-backref" href="#id43">2005/03/20      Version 0.2.0</a></h2>
+<p>Added ucgiprint and replace.</p>
+</div>
+<div class="section" id="version-0-1-0">
+<h2><a class="toc-backref" href="#id44">2005/02/18      Version 0.1.0</a></h2>
+<p>The first numbered version.</p>
+</div>
+</div>
+<div class="section" id="footnotes">
+<h1><a class="toc-backref" href="#id45">Footnotes</a></h1>
+<table class="docutils footnote" frame="void" id="id4" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Online at <a class="reference external" href="http://www.voidspace.org.uk/python/license.shtml">http://www.voidspace.org.uk/python/license.shtml</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id5" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>Online at <a class="reference external" href="http://www.voidspace.org.uk/python/pythonutils.html">http://www.voidspace.org.uk/python/pythonutils.html</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id6" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[3]</a></td><td>For file upload by CGI see - <a class="reference external" href="http://www.voidspace.org.uk/python/cgi.shtml#upload">http://www.voidspace.org.uk/python/cgi.shtml#upload</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<a class="reference external" href="cgiutils.txt">View document source</a>.
+Generated on: 2009-06-09 20:26 UTC.
+Generated by <a class="reference external" href="http://docutils.sourceforge.net/">Docutils</a> from <a class="reference external" href="http://docutils.sourceforge.net/rst.html">reStructuredText</a> source.
+
+</div>
+</body>
+</html>

@@ -1,0 +1,345 @@
+=======================
+ Voidspace Pythonutils
+=======================
+-----------------------------------
+ The Voidspace Pythonutils Package
+-----------------------------------
+
+:Author: Michael Foord
+:Contact: fuzzyman@voidspace.org.uk
+:Version: 0.4.0
+:Date: 2009/06/09
+:License: `BSD License`_ [#]_
+:Online Version: `Pythonutils Homepage`_
+:Support: `Mailing List`_
+
+.. _Mailing List: http://groups.google.com/group/pythonutils/
+
+.. _`Pythonutils Homepage`: http://www.voidspace.org.uk/python/pythonutils.html
+.. _BSD License: BSD-LICENSE.html
+
+.. contents:: The Pythonutils Modules
+
+.. note::
+
+    Other than ``ConfigObj`` and ``validate`` these modules are not under
+    active development and are in 'bugfix only' maintenance mode.
+
+
+Introduction
+============
+
+The Voidspace Pythonutils package is a simple way of installing the Voidspace 
+collection of modules [#]_. These are currently :
+
+    * **ConfigObj** 4.6.0   - Easy config file reading/writing
+    * **validate**  1.0.0   - Validation and type conversion system
+    * **StandOut**  3.0.0   - Simple logging and output control object
+    * **pathutils** 0.2.6   - For working with paths and files
+    * **cgiutils**  0.3.6   - {acro;CGI} helpers
+    * **urlpath**   0.1.0   - Functions for handling URLs
+    * **odict**     0.2.2   - Ordered Dictionary Class
+
+Several of the `Voidspace Projects`_ depend on these modules. They are also 
+useful in their own right of course. They are primarily *general utility* 
+modules that simplify common programming tasks in Python.
+
+All the modules are intended to be compatible with Python 2.2 or more recent.
+
+.. _Voidspace Projects: http://www.voidspace.org.uk/python/index.shtml
+
+ConfigObj_ is the biggest module in the Voidspace Pythonutils package. It offers 
+an extremely simple interface to reading and writing config files, and has a 
+vast array of additional features. 
+
+.. note::
+
+    These modules are maintained separately. You can *sometimes* get more
+    recent versions from the `Voidspace Modules`_ or Recipebook_ pages.
+
+.. _Voidspace Modules: http://www.voidspace.org.uk/python/modules.shtml
+.. _Recipebook: http://www.voidspace.org.uk/python/recipebook.shtml
+
+Downloading
+===========
+
+* `Source Distribution`_ (307kb) (zipfile with documentation)
+
+Many of the modules are also available individually from the 
+`Voidspace Modules`_ page or the `Voidspace Python Recipebook`_.
+
+.. _source distribution: http://www.voidspace.org.uk/downloads/pythonutils-0.4.0.zip
+.. _Voidspace Python Recipebook: http://www.voidspace.org.uk/python/recipebook.shtml
+
+Documentation
+=============
+
+Each module has their own page of documentation. This documentation comes 
+bundled in the source package.
+
+* ConfigObj_ [#]_
+* validate_ [#]_
+* StandOut_ [#]_
+* pathutils_ [#]_
+* cgiutils_ [#]_
+* urlpath_ [#]_
+* odict_ [#]_
+
+.. _ConfigObj: configobj.html
+.. _validate: validate.html
+.. _StandOut: standout.html
+.. _pathutils: pathutils.html
+.. _cgiutils: cgiutils.html
+.. _urlpath: urlpath.html
+.. _odict: odict.html
+
+
+Importing from Pythonutils
+===========================
+
+The pythonutils distributions comes with the 'pythonutils.pth' file. This needs
+ to be somewhere on ``sys.path``. This *ought* to happen automatically if you 
+ use the windows installer or the ``setup.py install`` command.
+
+This means that you can use *any* of the following commands (or similar) to 
+import from the Voidspace modules :
+
+.. raw:: html
+
+    {+coloring}
+    
+    from configobj import ConfigObj
+    from pythonutils.configobj import ConfigObj
+    from pythonutils import ConfigObj
+    
+    from odict import SequenceOrderedDict
+    from pythonutils.odict import SequenceOrderedDict
+    from pythonutils import SequenceOrderedDict
+
+    {-coloring}
+
+If any of these commands fail, check that the '.pth' file is in an appropriate 
+location. I reccommend using the ``from configobj import ConfigObj`` type 
+imports, as these work with the individual modules.
+
+The exception are *cgiutils* and *validate*. These aren't imported into the
+pythonutils namespace because they are less commonly used. You can still do 
+``import cgiutils`` and ``import pythonutils.cgiutils``, but 
+``from pythonutils import *`` doesn't import their names.
+
+.. caution::
+
+    I've had a report that on *some* distributions of Python 2.4 the '.pth'
+    file is being put in a place where it's not being accessed. When I find a
+    solution I'll make a fix and/or let you know.
+    
+    You can manually add a ``pythonutils.pth`` file in your ``site-packages``
+    folder, with a single line pointing to the location of the pythonutils
+    directory.
+
+Compatibility
+=============
+
+All the modules in Pythontuils are *intended* to be compatible with Python 2.2
+and more recent. Some of the modules (configobj and validate for example) have
+been tested extensively for compatibility with Python 2.2 - some of the other
+modules have been tested less rigorously {sm;:grin:}.
+
+If you have any problems (or discover any other bugs) then email me (on 
+fuzzyman@voidspace.org.uk)and I'll resolve the problems (or fix the bug).
+
+
+CHANGELOG
+==========
+
+Again, this is a CHANGELOG for the Pythonutils package. Each module will have 
+it's own CHANGELOG.
+
+2009/06/09 - Version 0.4.0
+--------------------------
+
+Updated the following modules :
+
+* ConfigObj 4.6.0
+* validate 1.0.0
+* pathutils 0.2.6
+
+
+2007/04/22 - Version 0.3.0
+--------------------------
+
+Removed the listquote module.
+
+Updated the following modules :
+
+* ConfigObj 4.4.0
+* validate 0.2.3
+* StandOut 3.0.0
+* odict 0.2.2
+* pathutils 0.2.5
+
+
+2005/12/16 - Version 0.2.5
+--------------------------
+
+Updated the following modules :
+
+* ConfigObj 4.1.0
+* validate 0.2.1
+* odict 0.2.1
+* pathutils 0.2.4
+* cgiutils 0.3.5
+
+2005/11/06 - Version 0.2.4
+--------------------------
+
+Corrected MANIFEST path separator to ``/``. This allows distutils commands like
+``bdist_rpm`` to work correctly.
+
+Updated to ConfigObj 4.0.1 and cgiutils 0.3.4
+
+2005/10/17 - Version 0.2.3
+--------------------------
+
+Updated to ConfigObj 4.0.0 final
+
+Updated to cgiutils 0.3.3
+
+2005/09/09 - Version 0.2.2
+--------------------------
+
+Updated to ConfigObj 4.0.0 beta 5
+
+This contains bugfixes to ConfigObj.
+
+Updated to odict 0.1.2 with various improvements and optimisations.
+
+2005/09/04 - Version 0.2.1
+--------------------------
+
+Updated to ConfigObj 4.0.0 beta 4
+
+This contains bugfixes to ConfigObj.
+
+2005/08/31 - Version 0.2.0
+--------------------------
+
+Refactored and redocumented.
+
+**Major** update to ConfigObj and validate.
+
+Removed caseless, and added odict and urlpath.
+
+* ConfigObj   4.0.0 beta 3
+* listquote   1.4.0
+* validate    0.2.0
+* StandOut    2.1.0
+* pathutils   0.2.1
+* cgiutils    0.3.2
+* odict       0.1.0
+* urlpath     0.1.0
+
+2005/06/01 - Version 0.1.1
+--------------------------
+
+Updated several of the modules.
+
+Thanks to `Par Pandit`_  for bugfix to listquote.py
+
+* ConfigObj   3.3.1b
+* caseless    2.2.0
+* listquote   1.3.0
+* validate    0.1.6
+* StandOut    2.1.0
+* pathutils   0.2.0
+* cgiutils    0.3.0
+
+
+2005/03/04 - Version 0.1.0
+--------------------------
+
+Packaged several of the Voidspace Pythonutils modules together.
+
+* ConfigObj   3.3.0
+* caseless    2.2.0
+* listquote   1.2.0
+* validate    0.1.6
+* StandOut    2.1.0
+* pathutils   0.1.0
+* cgiutils    0.1.0
+    
+
+.. _Par Pandit: ppandit@yahoo.com
+
+License
+=========
+
+These files are licensed under the BSD license. This is a very unrestrictive 
+license - but it comes with the usual disclaimer. This is free software - test 
+it, break it, just don't blame me if it eats your data ! (If it does though, 
+let me know, and I'll fix that it so it doesn't happen to anyone else 
+{sm;:-)} ::
+
+    Copyright (c) 2004-2005, Michael Foord
+    All rights reserved.
+    
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are
+    met:
+    
+    
+        * Redistributions of source code must retain the above copyright
+          notice, this list of conditions and the following disclaimer.
+    
+        * Redistributions in binary form must reproduce the above
+          copyright notice, this list of conditions and the following
+          disclaimer in the documentation and/or other materials provided
+          with the distribution.
+    
+        * Neither the name of Michael Foord nor the name of Voidspace 
+          may be used to endorse or promote products derived from this
+          software without specific prior written permission.
+    
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+    A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+    LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    
+You should also be able to find a copy of this license at : `BSD License`_
+
+Credits
+=======
+
+Note that the individual modules may be the work of more than one author. See 
+the indiviudal documentation pages for details of contributors.
+
+Particular thanks goes to `Nicola Larosa`_ for his help with ConfigObj and 
+setting up the Voidspace_ server.
+
+Contributions, suggestions, and bugfixes are welcome. Also welcomed are 
+donations_ to help cover the hosting and delivery costs of pythonutils.
+
+.. _Nicola Larosa: nico@teknico.net
+.. _Voidspace: http://www.voidspace.org.uk
+.. _donations: http://www.voidspace.org.uk/sponsorship.shtml
+
+Footnotes
+=========
+
+.. [#] Online at http://www.voidspace.org.uk/python/license.shtml
+.. [#] Well, the common ones anyway. You will see more modules at `Voidspace Modules`_ that aren't included.
+.. [#] Online at http://www.voidspace.org.uk/python/configobj.html
+.. [#] Online at http://www.voidspace.org.uk/python/validate.html
+.. [#] Online at http://www.voidspace.org.uk/python/standout.html
+.. [#] Online at http://www.voidspace.org.uk/python/pathutils.html
+.. [#] Online at http://www.voidspace.org.uk/python/cgiutils.html
+.. [#] Online at http://www.voidspace.org.uk/python/urlpath.html
+.. [#] Online at http://www.voidspace.org.uk/python/odict.html
+

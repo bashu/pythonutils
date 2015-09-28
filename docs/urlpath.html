@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>The urlpath Module</title>
+<meta name="author" content="Michael Foord" />
+<meta name="date" content="2005/08/20" />
+<link rel="stylesheet" href="stylesheets/voidspace_docutils.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="the-urlpath-module">
+<h1 class="title">The urlpath Module</h1>
+<h2 class="subtitle" id="working-with-urls">Working with URLs</h2>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Author:</th>
+<td>Michael Foord</td></tr>
+<tr><th class="docinfo-name">Contact:</th>
+<td><a class="first last reference external" href="mailto:fuzzyman&#37;&#52;&#48;voidspace&#46;org&#46;uk">fuzzyman<span>&#64;</span>voidspace<span>&#46;</span>org<span>&#46;</span>uk</a></td></tr>
+<tr><th class="docinfo-name">Version:</th>
+<td>0.1.0</td></tr>
+<tr><th class="docinfo-name">Date:</th>
+<td>2005/08/20</td></tr>
+<tr class="field"><th class="docinfo-name">License:</th><td class="field-body"><a class="reference external" href="BSD-LICENSE.txt">BSD License</a> <a class="footnote-reference" href="#id3" id="id1">[1]</a></td>
+</tr>
+<tr class="field"><th class="docinfo-name">Online Version:</th><td class="field-body"><a class="reference external" href="http://www.voidspace.org.uk/python/urlpath.html">urlpath online</a></td>
+</tr>
+<tr class="field"><th class="docinfo-name">Support:</th><td class="field-body"><a class="reference external" href="http://groups.google.com/group/pythonutils/">Mailing List</a></td>
+</tr>
+</tbody>
+</table>
+<div class="contents topic" id="urlpath-functions">
+<p class="topic-title first">urlpath Functions</p>
+<ul class="simple">
+<li><a class="reference internal" href="#introduction" id="id5">Introduction</a><ul>
+<li><a class="reference internal" href="#downloading" id="id6">Downloading</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pathjoin" id="id7">pathjoin</a></li>
+<li><a class="reference internal" href="#nativejoin" id="id8">nativejoin</a></li>
+<li><a class="reference internal" href="#relpathto" id="id9">relpathto</a></li>
+<li><a class="reference internal" href="#relpath" id="id10">relpath</a></li>
+<li><a class="reference internal" href="#tslash" id="id11">tslash</a></li>
+<li><a class="reference internal" href="#changelog" id="id12">CHANGELOG</a></li>
+</ul>
+</div>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">This module is not under active development and is in 'bugfix only'
+maintenance mode.</p>
+</div>
+<div class="section" id="introduction">
+<h1><a class="toc-backref" href="#id5">Introduction</a></h1>
+<p><em>urlpath</em> is a small module containing functions for working with URLs.
+Specifically it has functions for joining relative URLs and converting file
+paths to URLs and back again.</p>
+<p>It was created for <a class="reference external" href="http://www.voidspace.org.uk/python/rest2web/">rest2web</a>.</p>
+<p>It assumes URLs are composed of paths like 'path/path/resource' and that
+relative paths indicate the parent directory by '..'.</p>
+<p>This module is a part of the <a class="reference external" href="pythonutils.html">pythonutils</a> <a class="footnote-reference" href="#id4" id="id2">[2]</a> package. Many of the modules in
+this package can be seen at the <a class="reference external" href="http://www.voidspace.org.uk/python/modules.shtml">Voidspace Modules Page</a>.</p>
+<div class="section" id="downloading">
+<h2><a class="toc-backref" href="#id6">Downloading</a></h2>
+<p>As well as being included in the <a class="reference external" href="pythonutils.html">pythonutils</a> package, you can download <strong>urlpath</strong>
+directly from :</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.voidspace.org.uk/downloads/urlpath.py">urlpath.py (8k)</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="pathjoin">
+<h1><a class="toc-backref" href="#id7">pathjoin</a></h1>
+<pre class="literal-block">
+pathjoin(base, *paths)
+</pre>
+<p>This function join paths to a base, observing pardir ('..').</p>
+<p>If base doesn't <em>end</em> with '/' we assume it's a file rather than a directory.
+(So we get rid of it).</p>
+<p>This is useful if you are joining a series of relative paths to a single base.</p>
+</div>
+<div class="section" id="nativejoin">
+<h1><a class="toc-backref" href="#id8">nativejoin</a></h1>
+<pre class="literal-block">
+nativejoin(base, path)
+</pre>
+<p>Joins two paths - returning a native file path.</p>
+<p>Given a base path and a relative location, (in posix/url format) return a file
+path in an OS native way.</p>
+</div>
+<div class="section" id="relpathto">
+<h1><a class="toc-backref" href="#id9">relpathto</a></h1>
+<pre class="literal-block">
+relpathto(thisdir, origin, dest)
+</pre>
+<p>Given two paths relative to a directory, work out a path from origin
+to destination.</p>
+<p>Assumes UNIX/URL type relative paths. If origin doesn't <em>end</em> with '/' we
+assume it's a file rather than a directory.</p>
+<p>If the same paths are passed in :</p>
+<blockquote>
+<ul class="simple">
+<li>if the path ends with ('/') then we return ''</li>
+<li>else we return the last part of the path (presumably a filename)</li>
+</ul>
+</blockquote>
+<p>If thisdir doesn't start with '/' then we add one (this makes the top level of
+thisdir our root directory).</p>
+</div>
+<div class="section" id="relpath">
+<h1><a class="toc-backref" href="#id10">relpath</a></h1>
+<pre class="literal-block">
+relpath(origin, dest)
+</pre>
+<p>Given two absolute paths, work out a path from origin to destination.</p>
+<p>Assumes UNIX/URL type relative paths.</p>
+<p>If origin doesn't <em>end</em> with '/' we assume it's a file rather than
+a directory.</p>
+<p>If the same paths are passed in :</p>
+<blockquote>
+<ul class="simple">
+<li>if the path ends with ('/') then we return ''</li>
+<li>else we return the last part of the path (presumably a filename)</li>
+</ul>
+</blockquote>
+<p>If origin or dest don't start with '/' then we add it.</p>
+<p>We are <em>assuming</em> relative paths on the same device (i.e. same top level
+directory).</p>
+</div>
+<div class="section" id="tslash">
+<h1><a class="toc-backref" href="#id11">tslash</a></h1>
+<pre class="literal-block">
+tslash(apath)
+</pre>
+<p>Add a trailing slash (<tt class="docutils literal"><span class="pre">/</span></tt>) to a path if it needs one.</p>
+<p>Doesn't use <tt class="docutils literal"><span class="pre">os.sep</span></tt> because you end up jiggered on windoze - when you
+want separators for URLs.</p>
+</div>
+<div class="section" id="changelog">
+<h1><a class="toc-backref" href="#id12">CHANGELOG</a></h1>
+<p>See the source code for CHANGELOG (and TODO/ISSUES).</p>
+<table class="docutils footnote" frame="void" id="id3" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Online at <a class="reference external" href="http://www.voidspace.org.uk/python/license.shtml">http://www.voidspace.org.uk/python/license.shtml</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id4" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>Online at <a class="reference external" href="http://www.voidspace.org.uk/python/pythonutils.html">http://www.voidspace.org.uk/python/pythonutils.html</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<a class="reference external" href="urlpath.txt">View document source</a>.
+Generated on: 2009-06-09 20:26 UTC.
+Generated by <a class="reference external" href="http://docutils.sourceforge.net/">Docutils</a> from <a class="reference external" href="http://docutils.sourceforge.net/rst.html">reStructuredText</a> source.
+
+</div>
+</body>
+</html>

@@ -1,0 +1,586 @@
+=====================
+ The cgiutils Module
+=====================
+------------------
+ CGI Helper Stuff
+------------------
+
+:Author: `Michael Foord`_
+:Contact: fuzzyman@voidspace.org.uk
+:Version: 0.3.6
+:Date: 2009/06/08
+:License: `BSD License`_ [#]_
+:Online Version: `cgiutils online`_
+:Support: `Mailing List`_
+
+.. _Michael Foord: http://www.voidspace.org.uk/python/index.shtml
+
+.. _Mailing List: http://groups.google.com/group/pythonutils/
+.. _`cgiutils online`: http://www.voidspace.org.uk/python/cgiutils.html
+.. _BSD License: BSD-LICENSE.txt
+
+.. contents:: cgiutils Manual
+
+.. note::
+
+    This module is not under active development and is in 'bugfix only'
+    maintenance mode.
+
+Introduction
+============
+
+The *cgiutils* module contains functions and constants that are useful when 
+writing Python CGIs. {acro;CGI;Common Gateway Interface} is the simplest way of
+delivering dynamic content across the internet. Python is particularly good at
+text processing - which is a major component of delivering html, part of most
+CGIs.
+
+Of *particular* interest might be the functions for sending emails 
+programmatically (using sendmail *or* the smtplib), a function for generating 
+a set of links to many pages, and the {acro;DNS;Domain Name System} blacklist
+lookup.
+
+There's some other interesting stuff in here as well - like functions to do 
+things that every CGI has to cope with. They are most useful for simple
+scripts, where a full blown framework would be too cumbersome.
+
+For some uesful Python CGI applications see the `Voidspace CGI Page`_.
+
+This module is a part of the pythonutils_ [#]_ package. Many of the modules in 
+this package can be seen at the `Voidspace Modules Page`_  or the
+`Voidspace Python Recipebook`_.
+
+.. _pythonutils: pythonutils.html
+.. _Voidspace Modules Page: http://www.voidspace.org.uk/python/modules.shtml
+.. _Voidspace CGI Page: http://www.voidspace.org.uk/python/cgi.shtml
+.. _Voidspace Python Recipebook: http://www.voidspace.org.uk/python/recipebook.shtml
+
+
+Downloading
+-----------
+
+As well as being included in the pythonutils_ package, you can download **cgiutils**
+directly from :
+
+* `cgiutils.py (20k) <http://www.voidspace.org.uk/downloads/cgiutils.py>`_
+
+
+Constants
+=========
+
+*cgiutils* contains the following constants :
+
+.. raw:: html
+
+    {+coloring}
+    
+    serverline = "Content-Type: text/html"
+    
+    # A common location of sendmail on servers
+    SENDMAIL = "/usr/sbin/sendmail"
+    validchars = 'abcdefghijklmnopqrstuvwxyz0123456789!-_*'
+    alphanums = 'abcdefghijklmnopqrstuvwxyz0123456789'
+    
+    {-coloring}
+
+Dealing With CGI Forms
+======================
+
+These are a set of convenience functions for handling CGI forms (instances of 
+``cgi.FieldStorage``). They turn your form into a normal Python dictionary.
+
+You can either use ``getform`` or ``getall`` directly - or use ``getrequest``, 
+which avoids you having to instantiate a ``cgi.FieldStorage`` at all.
+
+These functions don't yet support file uploads [#]_.
+
+getrequest
+----------
+
+::
+
+    getrequest(valuelist=None, nolist=False)
+
+Initialise the ``FieldStorage`` and return the specified list of values as a 
+dictionary.
+
+If you don't specify a list of values, then *all* values will be returned.
+
+If you set ``nolist`` to ``True`` then any parameters supplied as lists 
+will only have their first entry returned.
+
+
+getform
+-------
+
+::
+
+    getform(valuelist, theform, notpresent='', nolist=False)
+
+This function, given a CGI form (``cgi.FieldStorage`` instance), extracts the 
+data from it, based on valuelist passed in. Any non-present values are set to 
+``''`` - although this can be changed.
+
+It also takes a keyword argument 'nolist'. If this is ``True`` list values only 
+return their first value.
+
+Returns a dictionary.
+
+getall
+------
+
+::
+
+    getall(theform, nolist=False)
+
+Passed a form (FieldStorage instance) return all the values.
+
+Also accepts the 'nolist' keyword argument as ``getform``.
+
+Returns a dictionary.
+
+
+Other Form Functions
+--------------------
+
+A few more functions that can be convenient for dealing with CGI forms.
+
+isblank
+~~~~~~~
+
+::
+
+    isblank(indict)
+
+Passed an indict of values it checks if any of the values are set.
+
+Returns ``True`` if every member of the indict is empty.
+
+I use it on a form processed with getform to tell if my CGI has been activated 
+without any values.
+
+formencode
+~~~~~~~~~~
+
+::
+
+    formencode(theform)
+
+A version that turns a cgi form into a single encoded string.
+
+It only handles single and list values, not multipart.
+
+This allows the contents of a form requested to be encoded into a single value 
+as part of another request.
+
+
+formdecode
+~~~~~~~~~~
+
+::
+
+    formdecode(thestring):
+
+Decode a single string back into a form like dictionary.
+
+Functions for Handling Email
+============================
+
+These functions are used to send emails (including html emails) from Python. 
+They are in this module because it is common to require your CGI application 
+to email you (or the user) when an action is performed.
+
+``mailme`` is the high level function which provides a single interface to 
+sending html and/or text emails. Either via ``sendmail`` or ``smtplib``.
+
+For creating an html email (optionally with an embedded text version) then use 
+``createhtmlmail``.
+
+mailme
+------
+
+::
+
+    mailme(to_email, msg, email_subject=None, from_email=None, 
+            host='localhost', port=25, username=None, password=None, 
+            html=True, sendmail=None):
+
+This function will send an email using ``sendmail`` or ``smtplib``, depending 
+on what parameters you pass it.
+
+If you want to use ``sendmail`` to send the email then set 
+``sendmail='/path/to/sendmail'``. (The ``SENDMAIL`` value from Constants_ often 
+works).
+
+If you aren't using sendmail then you will need to set ``host`` and ``port`` to 
+the correct values. If your server requires authentication then you'll need to 
+supply the correct ``username`` and ``password``. 
+
+``to_email`` can be a single email address, *or* a list of addresses.
+
+``mailme`` *assumes* you are sending an html email created by 
+``createhtmlmail``. If this isn't the case then set ``html=False``.
+
+Some servers won't let you send a message without supplying a ``from_email``.
+
+sendmailme
+----------
+
+::
+
+    sendmailme(to_email, msg, email_subject=None, from_email=None, 
+                html=True, sendmail=SENDMAIL):
+
+Quick and dirty, pipe a message to sendmail. Can only work on UNIX type systems 
+with sendmail.
+
+Will need the path to sendmail - defaults to the 'SENDMAIL' constant.
+
+``to_email`` can be a single email address, *or* a list of addresses.
+
+*Assumes* you are sending an html email created by ``createhtmlmail``. If this 
+isn't the case then set ``html=False``.
+
+createhtmlmail
+--------------
+
+::
+
+    createhtmlmail(subject, html, text=None)
+
+Create a mime-message that will render as HTML or text as appropriate.
+If no text is supplied we use htmllib to guess a text rendering. (so the html 
+needs to be well formed).
+
+Adapted from recipe 13.5 from Python Cookbook 2.
+
+environdata
+-----------
+
+::
+
+    environdata()
+
+Returns some data about the CGI environment, in a way that can be mailed. (As a 
+single string).
+
+validemail
+----------
+
+::
+
+    validemail(email):
+
+A quick function to do a *basic* email validation.
+
+Returns ``False`` or the email address.
+
+Templating and Output
+=====================
+
+These functions implement functions performed in one way or another by 
+*most* CGIs. Outputting to ``stdout`` and a basic html templating 
+system.
+
+cgiprint
+--------
+
+::
+
+    cgiprint(inline='', unbuff=False, line_end='\r\n')
+
+Print to the ``stdout``.
+
+Set ``unbuff=True`` to flush the buffer after every write.
+
+It prints the inline you send it, followed by the ``line_end``. By default this 
+is ``\r\n`` - which is the standard specified by the RFC for http headers.
+
+
+ucgiprint
+---------
+
+::
+
+    ucgiprint(inline='', unbuff=False, encoding='UTF-8', line_end='\r\n')
+
+A unicode version of ``cgiprint``. It allows you to store everything in your 
+script as unicode and just do your encoding in one place.
+
+Print to the ``stdout``.
+
+Set ``unbuff=True`` to flush the buffer after every write.
+
+It prints the inline you send it, followed by the ``line_end``. By default this 
+is ``\r\n`` - which is the standard specified by the RFC for http headers.
+
+``inline`` should be a unicode string.
+
+``encoding`` is the encoding used to encode ``inline`` to a byte-string. It 
+defaults to ``UTF-8``, set it to ``None`` if you pass in ``inline`` as a byte 
+string rather than a unicode string.
+
+replace
+-------
+
+::
+
+    replace(instring, indict)
+
+This function provides a simple but effective template system for your html 
+pages. Effectively it is a convenient way of doing multiple replaces in a 
+single string.
+
+Takes a string and a dictionary of replacements. 
+
+This function goes through the string and replaces every occurrence of every 
+dictionary key with it's value.
+
+``indict`` can also be a list of tuples instead of a dictionary (or anything 
+accepted by the dict function).
+
+As an example you could use it like : 
+
+.. raw:: html
+
+    {+coloring}
+    
+    template = '''
+    <html>
+        <head><title>**title**</title></head>
+        <body>
+            <h1>**title**</h1>
+            <h2>**sub title**</h2>
+            
+            <p>**body**</p>
+       </body>
+    </html>'''
+    #
+    indict = {
+            '**title**': 'This is a Title',
+            '**sub title**': 'This is a Sub-Title',
+            '**body**': 'This is the body text.'
+            }
+    #
+    # print the headers
+    cgiprint(serverline)
+    # followed by the blank line
+    cgiprint()
+    #
+    # put the values into the template
+    out_page = replace(template, indict)
+    #
+    # print that as well
+    cgiprint(out_page)
+    
+    {-coloring}
+
+Other Functions
+===============
+
+These are a set of functions that don't fit together in convenient categories 
+{sm;:-)}.
+
+error
+-----
+
+::
+
+    error(errorval='')
+
+An ultra-simple generic error function.
+
+This function implements a very dumb error page that reports an error. It uses 
+the string you provide as a level three centered header.
+
+makeindexline
+-------------
+
+::
+
+    makeindexline(url, startpage, total, numonpage=10, pagesonscreen=5)
+
+Make a menu line for a given number of inputs, with a certain number per page.
+Will look something like : ::
+
+    First  Previous  22 23 24 25 26 27 28 29 30 31 32  Next  Last
+
+Each number or word will be a link to the relevant page.
+
+url should be in the format : ``'<a href="script.py?start=%s">%s</a>'`` - 
+it will have the two ``%s`` values filled in by the function.
+
+The url will automatically be put between ``<strong></strong>`` tags. Your 
+script needs to accepts a parameter ``start`` telling it which page to display.
+
+``startpage`` is the page actually being viewed - which won't be a link.
+
+``total`` is the number of total inputs.
+
+``numonpage`` is the number of inputs per page - this tells makeindexline how 
+many pages to divide the total into.
+
+The links shown will be some before startpage and some after. The amount of 
+pages links are shown for is ``pagesonscreen``. (The actual total number shown 
+will be *2 \* pagesonscreen + 1*).
+
+The indexes generated are *a bit* like the ones created by google. Unlike 
+google however, next and previous jump you into the *middle* of the next set of 
+links. i.e. If you are on page 27 next will take you to 33 and previous to 21. 
+(assuming pagesonscreen is 5). This makes it possible to jump more quickly 
+through a lot of links. Also - the current page will always be in the center of 
+the index. (So you never *need* Next just to get to the next page).
+
+
+istrue
+------
+
+::
+
+    istrue(value)
+
+Accepts a string as input.
+
+If the string is one of  ``True``, ``On``, ``Yes``, or ``1`` it returns 
+``True``.
+
+If the string is one of  ``False``, ``Off``, ``No``, or ``0`` it returns 
+``False``.
+
+``istrue`` is not case sensitive.
+
+Any other input will raise a ``KeyError``. 
+
+
+randomstring
+------------
+
+::
+
+    randomstring(length)
+
+Return a random string of length 'length'.
+
+The string is comprised only of numbers and lowercase letters.
+
+
+blacklisted
+-----------
+
+::
+
+    blacklisted(ip, DNSBL_HOST='sbl-xbl.spamhaus.org')
+
+Returns ``True`` if ip address is a blacklisted IP (i.e. from a spammer).
+
+ip can also be a domain name - this raises ``socket.gaierror`` if the ip is a
+domain name that cannot be resolved.
+
+The DNS blacklist host (``DNSBL_HOST``) defaults to *sbl-xbl.spamhaus.org*.
+
+Other ones you could use include :
+
+- 'dns.rfc-ignorant.org'
+- 'postmaster.rfc-ignorant.org'
+- 'http.dnsbl.sorbs.net'
+- 'misc.dnsbl.sorbs.net'
+- 'spam.dnsbl.sorbs.net'
+- 'bl.spamcop.net'
+
+.. note::
+
+    Another, possibly more effective, way of coping with spam input to web
+    applications is to use the `Akismet Web Service <http://akismet.com>`_.
+    
+    For this you can use the
+    `Python Akismet API Interface <http://www.voidspace.org.uk/python/modules.shtml#akismet>`_.
+
+
+TODO/ISSUES
+===========
+
+The indexes generated by makeindexline use next to jump 10 pages. This is
+different to what people will expect if they are used to the 'Google' type
+index lines.
+
+createhtmlmail assumes iso-8859-1 input encoding for the html
+
+email functions to support 'cc' and 'bcc'
+
+Need doctests
+
+CHANGELOG
+=========
+
+2009/06/08      Version 0.3.6
+-----------------------------
+
+Removed a defunct blacklist server from the ``blacklisted`` function.
+
+
+2005/11/26      Version 0.3.5
+-----------------------------
+
+Add the ``blacklisted`` function.
+
+Added ``__version__``.
+
+
+2005/10/29      Version 0.3.4
+-----------------------------
+
+Shortened ``isblank``.
+
+
+2005/09/21      Version 0.3.3
+-----------------------------
+
+Fixed bug in ``getall``.
+
+Fixed bug in ``getrequest``.
+
+
+2005/08/27      Version 0.3.2
+-----------------------------
+
+Large dictionary replaces use a regex approach.
+
+
+2005/08/20      Version 0.3.1
+-----------------------------
+
+Improved istrue function.
+
+Added __all__.
+
+Various other code/doc improvements.
+
+
+2005/04/07      Version 0.3.0
+-----------------------------
+
+Changed the email functions, this may break things (but it's better this way)
+
+Added createhtmlemail, removed loginmailme
+
+mailme is now a wrapper for sendmailme, mailme, *and* the old loginmailme
+
+
+2005/03/20      Version 0.2.0
+-----------------------------
+
+Added ucgiprint and replace.
+
+
+2005/02/18      Version 0.1.0
+-----------------------------
+
+The first numbered version.
+
+Footnotes
+=========
+
+.. [#] Online at http://www.voidspace.org.uk/python/license.shtml
+.. [#] Online at http://www.voidspace.org.uk/python/pythonutils.html
+.. [#] For file upload by CGI see - http://www.voidspace.org.uk/python/cgi.shtml#upload
+
