@@ -271,10 +271,10 @@ def dottedQuadToNum(ip):
     16908291
     >>> int(dottedQuadToNum('1.2.3.4'))
     16909060
-    >>> dottedQuadToNum('1.2.3. 4')
+    >>> dottedQuadToNum('1.2.3.4')
     16909060
     >>> dottedQuadToNum('255.255.255.255')
-    4294967295L
+    4294967295
     >>> dottedQuadToNum('255.255.255.256')
     Traceback (most recent call last):
     ValueError: Not a good dotted-quad IP: 255.255.255.256
@@ -299,20 +299,20 @@ def numToDottedQuad(num):
     """
     Convert long int to dotted quad string
     
-    >>> numToDottedQuad(-1L)
+    >>> numToDottedQuad(-1)
     Traceback (most recent call last):
     ValueError: Not a good numeric IP: -1
-    >>> numToDottedQuad(1L)
+    >>> numToDottedQuad(1)
     '0.0.0.1'
-    >>> numToDottedQuad(16777218L)
+    >>> numToDottedQuad(16777218)
     '1.0.0.2'
-    >>> numToDottedQuad(16908291L)
+    >>> numToDottedQuad(16908291)
     '1.2.0.3'
-    >>> numToDottedQuad(16909060L)
+    >>> numToDottedQuad(16909060)
     '1.2.3.4'
-    >>> numToDottedQuad(4294967295L)
+    >>> numToDottedQuad(4294967295)
     '255.255.255.255'
-    >>> numToDottedQuad(4294967296L)
+    >>> numToDottedQuad(4294967296)
     Traceback (most recent call last):
     ValueError: Not a good numeric IP: 4294967296
     """
@@ -1293,7 +1293,7 @@ def is_mixed_list(value, *args):
     >>> res_str = "'".join(res_seq)
     >>> try:
     ...     vtor.check('mixed_list("yoda")', ('a'))
-    ... except VdtParamError, err:
+    ... except VdtParamError as err:
     ...     str(err) == res_str
     1
     """
@@ -1353,7 +1353,7 @@ def _test(value, *args, **keywargs):
     ...    ]
     >>> v = Validator({'test': _test})
     >>> for entry in checks:
-    ...     print v.check(('test(%s)' % entry), 3)
+    ...     print(v.check(('test(%s)' % entry), 3))
     (3, ('3', '6'), {'test': ['a', 'b', 'c'], 'max': '3', 'min': '1'})
     (3, ('3',), {})
     (3, ('3', '6'), {})
@@ -1398,14 +1398,14 @@ def _test(value, *args, **keywargs):
     
     Bug test for unicode arguments
     >>> v = Validator()
-    >>> v.check(u'string(min=4)', u'test')
-    u'test'
+    >>> v.check('string(min=4)', 'test')
+    'test'
     
     >>> v = Validator()
-    >>> v.get_default_value(u'string(min=4, default="1234")')
-    u'1234'
-    >>> v.check(u'string(min=4, default="1234")', u'test')
-    u'test'
+    >>> v.get_default_value('string(min=4, default="1234")')
+    '1234'
+    >>> v.check('string(min=4, default="1234")', 'test')
+    'test'
     
     >>> v = Validator()
     >>> default = v.get_default_value('string(default=None)')
@@ -1431,7 +1431,7 @@ def _test3():
     ''
     >>> vtor.check('string(default="\n")', '', missing=True)
     '\n'
-    >>> print vtor.check('string(default="\n")', '', missing=True),
+    >>> print(vtor.check('string(default="\n")', '', missing=True)),
     <BLANKLINE>
     >>> vtor.check('string()', '\n')
     '\n'
