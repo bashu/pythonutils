@@ -23,11 +23,11 @@ namespace.
 It doesn't import cgiutils or validate.
 """
 
-from configobj import *
-from pathutils import *
-from standout import *
-from urlpath import *
-from odict import *
+from .configobj import *
+from .pathutils import *
+from .standout import *
+from .urlpath import *
+from .odict import *
 
 __version__ = '0.4.0'
 
