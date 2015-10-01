@@ -88,7 +88,7 @@ def getform(valuelist, theform, notpresent='', nolist=False):
     """
     data = {}
     for field in valuelist:
-        if not theform.has_key(field):
+        if field not in theform:
             data[field] = notpresent
         else:
             if not isinstance(theform[field], list):
@@ -112,7 +112,7 @@ def getall(theform, nolist=False):
     Returns a dictionary.
     """
     data = {}
-    for field in theform.keys():
+    for field in list(theform.keys()):
         if not isinstance(theform[field], list):
             data[field] = theform[field].value
         else:
@@ -133,7 +133,7 @@ def isblank(indict):
     I use it on a form processed with getform to tell if my CGI has been 
     activated without any values.
     """
-    return not [val for val in indict.values() if val]
+    return not [val for val in list(indict.values()) if val]
 
 def formencode(theform):
     """
@@ -141,13 +141,19 @@ def formencode(theform):
     It only handles single and list values, not multipart.
     This allows the contents of a form requested to be encoded into a single value as part of another request.
     """
-    from urllib import urlencode, quote_plus
+    try:
+        from urllib.parse import urlencode, quote_plus
+    except ImportError:
+        from urllib import urlencode, quote_plus
     return quote_plus(urlencode(getall(theform)))
 
 def formdecode(thestring):
     """Decode a single string back into a form like dictionary."""
     from cgi import parse_qs
-    from urllib import unquote_plus 
+    try:
+        from urllib.parse import unquote_plus
+    except ImportError:
+        from urllib import unquote_plus 
     return parse_qs(unquote_plus(thestring), True)
 
 
@@ -237,21 +243,21 @@ def createhtmlmail(subject, html, text=None):
     
     Adapted from recipe 13.5 from Python Cookbook 2
     """
-    import MimeWriter, mimetools, StringIO
+    import MimeWriter, mimetools, io
     if text is None:
         # produce an approximate text from the HTML input
         import htmllib
         import formatter
-        textout = StringIO.StringIO()
+        textout = io.StringIO()
         formtext = formatter.AbstractFormatter(formatter.DumbWriter(textout))
         parser = htmllib.HTMLParser(formtext)
         parser.feed(html)
         parser.close()
         text = textout.getvalue()
         del textout, formtext, parser
-    out = StringIO.StringIO()       # output buffer for our message
-    htmlin = StringIO.StringIO(html)  # input buffer for the HTML
-    txtin = StringIO.StringIO(text)   # input buffer for the plain text
+    out = io.StringIO()       # output buffer for our message
+    htmlin = io.StringIO(html)  # input buffer for the HTML
+    txtin = io.StringIO(text)   # input buffer for the plain text
     writer = MimeWriter.MimeWriter(out)
     # Set up some basic headers. Place subject here because smtplib.sendmail
     # expects it to be in the message, as relevant RFCs prescribe.
@@ -284,7 +290,7 @@ def environdata():
     environs = []
     environs.append("\n\n---------------------------------------\n")
     for x in ENVIRONLIST:
-        if os.environ.has_key(x):
+        if x in os.environ:
             environs.append("%s: %s\n" % (x, os.environ[x]))
     environs.append("---------------------------------------\n")
     return ''.join(environs)
@@ -306,15 +312,15 @@ def validemail(email):
 
 def error(errorval=''):
     """The generic error function."""
-    print serverline
-    print
-    print '''<html><head><title>An Error Has Occurred</title>
+    print(serverline)
+    print()
+    print('''<html><head><title>An Error Has Occurred</title>
     <body><center>
     <h1>Very Sorry</h1>
-    <h2>An Error Has Occurred</h2>'''
+    <h2>An Error Has Occurred</h2>''')
     if errorval:
-        print '<h3>%s</h3>' % errorval
-    print '</center></body></html>'
+        print('<h3>%s</h3>' % errorval)
+    print('</center></body></html>')
     sys.exit()
     
 #########################################################
@@ -476,7 +482,7 @@ def replace(instring, indict):
     """
     indict = dict(indict)
     if len(indict) > 40:
-        regex = re.compile("(%s)" % "|".join(map(re.escape, indict.keys())))
+        regex = re.compile("(%s)" % "|".join(map(re.escape, list(indict.keys()))))
         # For each match, look-up corresponding value in dictionary
         return regex.sub(lambda mo: indict[mo.string[mo.start():mo.end()]],
                                                                     instring)

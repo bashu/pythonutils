@@ -271,10 +271,10 @@ def dottedQuadToNum(ip):
     16908291
     >>> int(dottedQuadToNum('1.2.3.4'))
     16909060
-    >>> dottedQuadToNum('1.2.3. 4')
+    >>> dottedQuadToNum('1.2.3.4')
     16909060
     >>> dottedQuadToNum('255.255.255.255')
-    4294967295L
+    4294967295
     >>> dottedQuadToNum('255.255.255.256')
     Traceback (most recent call last):
     ValueError: Not a good dotted-quad IP: 255.255.255.256
@@ -289,7 +289,7 @@ def dottedQuadToNum(ip):
     except socket.error:
         # bug in inet_aton, corrected in Python 2.3
         if ip.strip() == '255.255.255.255':
-            return 0xFFFFFFFFL
+            return 0xFFFFFFFF
         else:
             raise ValueError('Not a good dotted-quad IP: %s' % ip)
     return
@@ -299,20 +299,20 @@ def numToDottedQuad(num):
     """
     Convert long int to dotted quad string
     
-    >>> numToDottedQuad(-1L)
+    >>> numToDottedQuad(-1)
     Traceback (most recent call last):
     ValueError: Not a good numeric IP: -1
-    >>> numToDottedQuad(1L)
+    >>> numToDottedQuad(1)
     '0.0.0.1'
-    >>> numToDottedQuad(16777218L)
+    >>> numToDottedQuad(16777218)
     '1.0.0.2'
-    >>> numToDottedQuad(16908291L)
+    >>> numToDottedQuad(16908291)
     '1.2.0.3'
-    >>> numToDottedQuad(16909060L)
+    >>> numToDottedQuad(16909060)
     '1.2.3.4'
-    >>> numToDottedQuad(4294967295L)
+    >>> numToDottedQuad(4294967295)
     '255.255.255.255'
-    >>> numToDottedQuad(4294967296L)
+    >>> numToDottedQuad(4294967296)
     Traceback (most recent call last):
     ValueError: Not a good numeric IP: 4294967296
     """
@@ -321,11 +321,11 @@ def numToDottedQuad(num):
     import socket, struct
     
     # no need to intercept here, 4294967295L is fine
-    if num > 4294967295L or num < 0:
+    if num > 4294967295 or num < 0:
         raise ValueError('Not a good numeric IP: %s' % num)
     try:
         return socket.inet_ntoa(
-            struct.pack('!L', long(num)))
+            struct.pack('!L', int(num)))
     except (socket.error, struct.error, OverflowError):
         raise ValueError('Not a good numeric IP: %s' % num)
 
@@ -469,9 +469,9 @@ class Validator(object):
     ...     # check that value is of the correct type.
     ...     # possible valid inputs are integers or strings
     ...     # that represent integers
-    ...     if not isinstance(value, (int, long, basestring)):
+    ...     if not isinstance(value, (int, str)):
     ...         raise VdtTypeError(value)
-    ...     elif isinstance(value, basestring):
+    ...     elif isinstance(value, str):
     ...         # if we are given a string
     ...         # attempt to convert to an integer
     ...         try:
@@ -620,7 +620,7 @@ class Validator(object):
             fun_kwargs = dict(fun_kwargs)
         else:
             fun_name, fun_args, fun_kwargs, default = self._parse_check(check)
-            fun_kwargs = dict((str(key), value) for (key, value) in fun_kwargs.items())
+            fun_kwargs = dict((str(key), value) for (key, value) in list(fun_kwargs.items()))
             self._cache[check] = fun_name, list(fun_args), dict(fun_kwargs), default
         return fun_name, fun_args, fun_kwargs, default
         
@@ -751,10 +751,10 @@ def _is_num_param(names, values, to_float=False):
     for (name, val) in zip(names, values):
         if val is None:
             out_params.append(val)
-        elif isinstance(val, (int, long, float, basestring)):
+        elif isinstance(val, (int, float, str)):
             try:
                 out_params.append(fun(val))
-            except ValueError, e:
+            except ValueError as e:
                 raise VdtParamError(name, val)
         else:
             raise VdtParamError(name, val)
@@ -769,9 +769,9 @@ def _is_num_param(names, values, to_float=False):
 
 def is_integer(value, min=None, max=None):
     """
-    A check that tests that a given value is an integer (int, or long)
-    and optionally, between bounds. A negative value is accepted, while
-    a float will fail.
+    A check that tests that a given value is an integer and
+    optionally, between bounds. A negative value is accepted, while a
+    float will fail.
     
     If the value is a string, then the conversion is done - if possible.
     Otherwise a VdtError is raised.
@@ -808,9 +808,9 @@ def is_integer(value, min=None, max=None):
     0
     """
     (min_val, max_val) = _is_num_param(('min', 'max'), (min, max))
-    if not isinstance(value, (int, long, basestring)):
+    if not isinstance(value, (int, str)):
         raise VdtTypeError(value)
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         # if it's a string - does it represent an integer ?
         try:
             value = int(value)
@@ -860,7 +860,7 @@ def is_float(value, min=None, max=None):
     """
     (min_val, max_val) = _is_num_param(
         ('min', 'max'), (min, max), to_float=True)
-    if not isinstance(value, (int, long, float, basestring)):
+    if not isinstance(value, (int, float, str)):
         raise VdtTypeError(value)
     if not isinstance(value, float):
         # if it's a string - does it represent a float ?
@@ -925,7 +925,7 @@ def is_boolean(value):
     VdtTypeError: the value "up" is of the wrong type.
     
     """
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         try:
             return bool_dict[value.lower()]
         except KeyError:
@@ -968,7 +968,7 @@ def is_ip_addr(value):
     Traceback (most recent call last):
     VdtTypeError: the value "0" is of the wrong type.
     """
-    if not isinstance(value, basestring):
+    if not isinstance(value, str):
         raise VdtTypeError(value)
     value = value.strip()
     try:
@@ -1010,7 +1010,7 @@ def is_list(value, min=None, max=None):
     VdtTypeError: the value "12" is of the wrong type.
     """
     (min_len, max_len) = _is_num_param(('min', 'max'), (min, max))
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         raise VdtTypeError(value)
     try:
         num_members = len(value)
@@ -1079,7 +1079,7 @@ def is_string(value, min=None, max=None):
     Traceback (most recent call last):
     VdtValueTooLongError: the value "1234" is too long.
     """
-    if not isinstance(value, basestring):
+    if not isinstance(value, str):
         raise VdtTypeError(value)
     (min_len, max_len) = _is_num_param(('min', 'max'), (min, max))
     try:
@@ -1185,7 +1185,7 @@ def is_string_list(value, min=None, max=None):
     Traceback (most recent call last):
     VdtTypeError: the value "hello" is of the wrong type.
     """
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         raise VdtTypeError(value)
     return [is_string(mem) for mem in is_list(value, min, max)]
 
@@ -1293,7 +1293,7 @@ def is_mixed_list(value, *args):
     >>> res_str = "'".join(res_seq)
     >>> try:
     ...     vtor.check('mixed_list("yoda")', ('a'))
-    ... except VdtParamError, err:
+    ... except VdtParamError as err:
     ...     str(err) == res_str
     1
     """
@@ -1307,7 +1307,7 @@ def is_mixed_list(value, *args):
         raise VdtValueTooLongError(value)
     try:
         return [fun_dict[arg](val) for arg, val in zip(args, value)]
-    except KeyError, e:
+    except KeyError as e:
         raise VdtParamError('mixed_list', e)
 
 
@@ -1324,7 +1324,7 @@ def is_option(value, *options):
     Traceback (most recent call last):
     VdtTypeError: the value "0" is of the wrong type.
     """
-    if not isinstance(value, basestring):
+    if not isinstance(value, str):
         raise VdtTypeError(value)
     if not value in options:
         raise VdtValueError(value)
@@ -1353,7 +1353,7 @@ def _test(value, *args, **keywargs):
     ...    ]
     >>> v = Validator({'test': _test})
     >>> for entry in checks:
-    ...     print v.check(('test(%s)' % entry), 3)
+    ...     print(v.check(('test(%s)' % entry), 3))
     (3, ('3', '6'), {'test': ['a', 'b', 'c'], 'max': '3', 'min': '1'})
     (3, ('3',), {})
     (3, ('3', '6'), {})
@@ -1398,14 +1398,14 @@ def _test(value, *args, **keywargs):
     
     Bug test for unicode arguments
     >>> v = Validator()
-    >>> v.check(u'string(min=4)', u'test')
-    u'test'
+    >>> v.check('string(min=4)', 'test')
+    'test'
     
     >>> v = Validator()
-    >>> v.get_default_value(u'string(min=4, default="1234")')
-    u'1234'
-    >>> v.check(u'string(min=4, default="1234")', u'test')
-    u'test'
+    >>> v.get_default_value('string(min=4, default="1234")')
+    '1234'
+    >>> v.check('string(min=4, default="1234")', 'test')
+    'test'
     
     >>> v = Validator()
     >>> default = v.get_default_value('string(default=None)')
@@ -1431,7 +1431,7 @@ def _test3():
     ''
     >>> vtor.check('string(default="\n")', '', missing=True)
     '\n'
-    >>> print vtor.check('string(default="\n")', '', missing=True),
+    >>> print(vtor.check('string(default="\n")', '', missing=True)),
     <BLANKLINE>
     >>> vtor.check('string()', '\n')
     '\n'
